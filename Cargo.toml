@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-firefly-rust = "0.11.0"
+firefly-rust = { version = "0.11.0", features = ["alloc", "talc"] }
 
 # https://github.com/johnthagen/min-sized-rust
 [profile.release]

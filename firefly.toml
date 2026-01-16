@@ -2,3 +2,12 @@ author_id = "olle"
 app_id = "lampy"
 author_name = "Olle & Catboots"
 app_name = "Lampy"
+
+[files]
+_splash = { path = "assets/title.png" }
+spritesheet = { path = "assets/spritesheet.png" }
+font = { path = "assets/eg_4x6.fff" }
+
+[badges]
+1 = { name = "wins", steps = 10, descr = "Win 10 times" }
+2 = { name = "deaths", steps = 10, descr = "Die 10 times" }
