@@ -15,6 +15,7 @@ mod player;
 mod point_math;
 mod rendering;
 mod state;
+mod camera;
 mod utility;
 
 use game_state::*;

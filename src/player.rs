@@ -3,7 +3,7 @@ use firefly_rust::{
     read_pad,
 };
 
-use crate::{constants::PI, point_math::*};
+use crate::{constants::PI, point_math::*, camera::*};
 
 pub struct Player {
     buttons: Buttons,
@@ -12,6 +12,7 @@ pub struct Player {
     pub peer: Peer,
     position: Point,
     speed: f32,
+    camera: Camera,
 }
 
 impl Player {
@@ -27,6 +28,7 @@ impl Player {
             peer,
             position: Point::new(120, 80),
             speed: 0.0,
+            camera: Camera::new(800,800),
         }
     }
 
@@ -60,6 +62,8 @@ impl Player {
         if !self.buttons.any() {
             self.color = None;
         }
+
+        self.camera.set_camera_position(self.position);
     }
 
     pub fn draw(&self) {
