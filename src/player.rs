@@ -13,6 +13,7 @@ pub struct Player {
 impl Player {
     const CONE_ANGLE: Angle = Angle::from_radians(PI / 20.0);
     const CONE_LENGTH: f32 = 25.0;
+    const SPEED: f32 = 0.001;
 
     pub fn new(peer: Peer) -> Self {
         Self {
@@ -27,6 +28,10 @@ impl Player {
     pub fn update(&mut self) {
         if let Some(pad) = read_pad(self.peer) {
             self.direction = -pad.azimuth();
+            self.speed = pad.radius();
+            self.position = self
+                .position
+                .point_from_distance_and_angle(self.speed * Self::SPEED, self.direction)
         }
     }
 
