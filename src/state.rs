@@ -2,8 +2,8 @@ use alloc::vec;
 use alloc::{format, vec::Vec};
 use core::cell::OnceCell;
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, audio, clear_screen, load_file_buf, log_debug,
-    read_buttons, read_pad,
+    audio, clear_screen, load_file_buf, log_debug, read_buttons, read_pad, Buttons, Color, FileBuf,
+    Peer, Peers,
 };
 
 use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*, world::*};
@@ -17,7 +17,7 @@ pub struct State {
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
     player: Option<Peer>,
-    players: Vec<Player>,
+    pub players: Vec<Player>,
     pub spritesheet: FileBuf,
     theme: audio::Node<audio::Gain>,
     pub title: FileBuf,

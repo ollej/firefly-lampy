@@ -1,13 +1,14 @@
 use firefly_rust::{
-    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
+    Point, Style,
 };
 
 use crate::{camera::*, constants::PI, point_math::*};
 
 pub struct Player {
+    pub attraction_target: Point,
     buttons: Buttons,
-    color: Option<Color>,
+    pub color: Option<Color>,
     direction: Angle,
     pub peer: Peer,
     position: Point,
@@ -18,18 +19,26 @@ pub struct Player {
 impl Player {
     const CONE_ANGLE: Angle = Angle::from_radians(PI / 20.0);
     const CONE_LENGTH: f32 = 25.0;
+    const ATTRACTION_LENGTH: f32 = 20.0;
     const SPEED: f32 = 0.001;
 
     pub fn new(peer: Peer) -> Self {
+        let direction = Angle::ZERO;
+        let position = Point::new(120, 80);
         Self {
+            attraction_target: Self::calculate_attraction_target(position, direction),
             buttons: Buttons::default(),
             color: None,
-            direction: Angle::ZERO,
+            direction,
             peer,
-            position: Point::new(120, 80),
+            position,
             speed: 0.0,
             camera: Camera::new(800, 800),
         }
+    }
+
+    fn calculate_attraction_target(position: Point, direction: Angle) -> Point {
+        position.point_from_distance_and_angle(Self::ATTRACTION_LENGTH, direction)
     }
 
     pub fn update(&mut self) {
@@ -45,6 +54,8 @@ impl Player {
             self.position = self
                 .position
                 .point_from_distance_and_angle(self.speed * Self::SPEED, self.direction);
+            self.attraction_target =
+                Self::calculate_attraction_target(self.position, self.direction);
 
             self.camera.set_camera_position(self.position);
         }

@@ -1,6 +1,6 @@
-use firefly_rust::{Angle, Color, Point, draw_point, log_debug};
+use firefly_rust::{draw_point, log_debug, math, Angle, Color, Point};
 
-use crate::{particles::*, point_math::*, utility::*};
+use crate::{particles::*, point_math::*, state::*, utility::*};
 
 pub struct Firefly {
     direction: Angle,
@@ -11,6 +11,7 @@ pub struct Firefly {
 
 impl Firefly {
     pub const MAX_COUNT: i32 = 20;
+    const ATTRACTION_DISTANCE: i32 = 10;
     const SPEED: f32 = 1.0;
     const COLORS: [Color; 4] = [
         Color::Purple,
@@ -39,12 +40,12 @@ impl Firefly {
 
     pub fn update(&mut self) {
         self.update_movement();
-        self.spawn_particles();
+        //self.spawn_particles();
     }
 
     fn update_movement(&mut self) {
-        let random_direction_change = Angle::from_degrees(random_range(0, 10) as f32 - 5.0);
-        self.direction = self.direction + random_direction_change;
+        let direction_change = self.direction_change();
+        self.direction = self.direction + direction_change;
         let new_position = self
             .position
             .point_from_distance_and_angle(Self::SPEED, self.direction);
@@ -52,6 +53,32 @@ impl Firefly {
             x: new_position.x.clamp(0, 240),
             y: new_position.y.clamp(0, 160),
         };
+    }
+
+    fn direction_change(&self) -> Angle {
+        if let Some(attraction_target) = self.find_closest_target() {
+            self.position.angle_to(&attraction_target)
+        } else {
+            Angle::from_degrees(random_range(0, 10) as f32 - 5.0)
+        }
+    }
+
+    fn find_closest_target(&self) -> Option<Point> {
+        let state = get_state();
+        state
+            .players
+            .iter()
+            .filter(|player| player.color.is_some())
+            .filter(|player| self.color == player.color.unwrap())
+            .map(|player| {
+                (
+                    player.attraction_target,
+                    math::floor(self.position.distance(&player.attraction_target)) as i32,
+                )
+            })
+            .filter(|(_attraction_target, distance)| distance < &Self::ATTRACTION_DISTANCE)
+            .min_by(|a, b| a.1.cmp(&b.1))
+            .map(|(attraction_target, _distance)| attraction_target)
     }
 
     fn spawn_particles(&mut self) {

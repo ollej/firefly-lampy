@@ -1,6 +1,9 @@
-use firefly_rust::{Angle, Point, math};
+use firefly_rust::{math, Angle, Point};
+
+use crate::constants::PI;
 
 pub trait PointMath {
+    fn angle_to(&self, other: &Point) -> Angle;
     fn distance(&self, other: &Point) -> f32;
     fn point_from_distance_and_angle(&self, distance: f32, angle: Angle) -> Point;
 }
@@ -8,6 +11,13 @@ pub trait PointMath {
 impl PointMath for Point {
     fn distance(&self, other: &Point) -> f32 {
         math::sqrt(((self.x - other.x).pow(2) + (self.y - other.y).pow(2)) as f32)
+    }
+
+    fn angle_to(&self, other: &Point) -> Angle {
+        let dx = other.x - self.x;
+        let dy = other.y - self.y;
+        let theta = math::atan2(dy as f32, dx as f32);
+        Angle::from_radians(theta + PI)
     }
 
     fn point_from_distance_and_angle(&self, distance: f32, angle: Angle) -> Point {
