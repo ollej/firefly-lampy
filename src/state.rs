@@ -6,7 +6,7 @@ use firefly_rust::{
     Peer, Peers,
 };
 
-use crate::{firefly::*, game_state::*, player::*, rendering::*};
+use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*};
 
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
@@ -27,7 +27,7 @@ impl Default for State {
     fn default() -> Self {
         State {
             buttons: Buttons::default(),
-            fireflies: vec![Firefly::new()],
+            fireflies: vec![],
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
@@ -83,6 +83,9 @@ impl State {
             GameState::Playing => {
                 for player in self.players.iter_mut() {
                     player.update();
+                }
+                if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
+                    self.fireflies.push(Firefly::random());
                 }
                 for firefly in self.fireflies.iter_mut() {
                     firefly.update();
