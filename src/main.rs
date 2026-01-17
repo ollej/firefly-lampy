@@ -13,6 +13,8 @@ mod player;
 mod point_math;
 mod rendering;
 mod state;
+mod utility;
+mod particles;
 
 use game_state::*;
 use rendering::*;
