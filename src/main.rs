@@ -10,6 +10,7 @@ mod constants;
 mod drawing;
 mod game_state;
 mod player;
+mod point_math;
 mod rendering;
 mod state;
 

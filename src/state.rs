@@ -57,7 +57,6 @@ impl State {
 
     pub fn update(&mut self) {
         // TODO: Read each player
-        let pad = read_pad(Peer::COMBINED);
         let buttons = read_buttons(Peer::COMBINED);
         let just_pressed = buttons.just_pressed(&self.buttons);
         let just_released = buttons.just_released(&self.buttons);
@@ -85,7 +84,9 @@ impl State {
                 }
             }
             GameState::Playing => {
-                // TODO: Read touchpad
+                for player in self.players.iter_mut() {
+                    player.update();
+                }
                 if just_pressed.s {
                     //todo!()
                 }

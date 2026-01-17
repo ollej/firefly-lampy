@@ -28,3 +28,4 @@ pub const FONT_BASE_LINE: i32 = 4;
 pub const LINE_HEIGHT: i32 = 8;
 pub const BADGE_WINS: Badge = Badge(1);
 pub const BADGE_DEATHS: Badge = Badge(2);
+pub const PI: f32 = 3.14;
