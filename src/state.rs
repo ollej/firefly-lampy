@@ -16,8 +16,8 @@ pub struct State {
     pub font: FileBuf,
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
-    player: Option<Peer>,
     pub players: Vec<Player>,
+    me: Option<Peer>,
     pub spritesheet: FileBuf,
     theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
@@ -32,12 +32,13 @@ impl Default for State {
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
-            player: None,
+            //player: None,
             players: Vec::new(),
+            me: None,
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
-            world: World::new(50,50),
+            world: World::new(30,30),
         }
     }
 }
@@ -50,8 +51,9 @@ pub fn get_state() -> &'static mut State {
 impl State {
     pub fn new(player: Peer, peers: Peers) -> Self {
         State {
-            player: Some(player),
+            //player: Some(player),
             players: peers.iter().map(|peer| Player::new(peer)).collect(),
+            me: Some(player),
             ..State::default()
         }
     }
@@ -103,7 +105,13 @@ impl State {
 
     pub fn draw(&self) {
         clear_screen(Color::White);
-        self.world.draw_all_without_camera();
+
+        let local_player = self.me.and_then(|me| self.players.iter().find(|p| p.peer == me));
+        if let Some(player) = local_player {
+            self.world.draw(&player.camera);
+        }
+
+
         for player in self.players.iter() {
             player.draw();
         }

@@ -3,7 +3,7 @@ use firefly_rust::{
     Point, Style,
 };
 
-use crate::{camera::*, constants::PI, point_math::*};
+use crate::{camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, point_math::*};
 
 pub struct Player {
     pub attraction_target: Point,
@@ -13,7 +13,7 @@ pub struct Player {
     pub peer: Peer,
     position: Point,
     speed: f32,
-    camera: Camera,
+    pub camera: Camera,
 }
 
 impl Player {
@@ -33,7 +33,7 @@ impl Player {
             peer,
             position,
             speed: 0.0,
-            camera: Camera::new(800, 800),
+            camera: Camera::new(WORLD_WIDTH, WORLD_HEIGHT),
         }
     }
 
@@ -57,7 +57,8 @@ impl Player {
             self.attraction_target =
                 Self::calculate_attraction_target(self.position, self.direction);
 
-            self.camera.set_camera_position(self.position);
+            //self.camera.set_camera_position(self.position);
+            self.camera.follow_player(self.position, 0.4);
         }
     }
 
@@ -90,10 +91,13 @@ impl Player {
     }
 
     fn draw_lamp(&self) {
+
+        let transformed_position : Point = self.camera.world_to_screen(self.position);
+
         draw_circle(
             Point {
-                x: self.position.x - 2,
-                y: self.position.y - 2,
+                x: transformed_position.x - 2,
+                y: transformed_position.y - 2,
             },
             5,
             Style {
@@ -106,7 +110,7 @@ impl Player {
 
     fn draw_light_cone(&self) {
         if let Some(color) = self.color {
-            let a = self.position;
+            let a = self.camera.world_to_screen(self.position);
             let b = a.point_from_distance_and_angle(
                 Self::CONE_LENGTH,
                 self.direction - Self::CONE_ANGLE,

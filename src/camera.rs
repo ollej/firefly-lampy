@@ -1,7 +1,5 @@
 use firefly_rust::Point;
-
-const SCREEN_WIDTH: i32 = 240;
-const SCREEN_HEIGHT: i32 = 160;
+use crate::constants::*;
 
 pub struct Camera {
     position: Point,
