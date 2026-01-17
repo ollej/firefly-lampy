@@ -2,12 +2,14 @@
 #![no_main]
 
 extern crate alloc;
+use alloc::format;
 
 use firefly_rust as ff;
 
 mod constants;
 mod drawing;
 mod game_state;
+mod player;
 mod rendering;
 mod state;
 
@@ -28,8 +30,10 @@ extern "C" fn handle_menu(menu_item: u8) {
 
 #[unsafe(no_mangle)]
 extern "C" fn boot() {
+    let peers = ff::get_peers();
+    let me = ff::get_me();
     #[allow(static_mut_refs)]
-    unsafe { STATE.set(State::default()) }.ok().unwrap();
+    unsafe { STATE.set(State::new(me, peers)) }.ok().unwrap();
     ff::add_menu_item(1, "Credits");
     ff::add_menu_item(2, "Restart");
     ff::add_menu_item(3, "Info");
