@@ -7,7 +7,7 @@ use alloc::format;
 pub fn render_title() {
     let state = get_state();
     draw_image(&state.title.as_image(), Point { x: 0, y: 0 });
-    display_centered_message(Some(Color::White), &["Press (E) to start!"]);
+    display_centered_message(Some(Color::White), &["Lampy", "Press (E) to start!"]);
 }
 
 pub fn render_died() {

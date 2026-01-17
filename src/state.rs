@@ -52,10 +52,8 @@ impl State {
     }
 
     pub fn update(&mut self) {
-        // TODO: Read each player
         let buttons = read_buttons(Peer::COMBINED);
         let just_pressed = buttons.just_pressed(&self.buttons);
-        let just_released = buttons.just_released(&self.buttons);
         self.buttons = buttons;
 
         match self.game_state {
