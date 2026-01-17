@@ -3,7 +3,7 @@ use firefly_rust::{
     read_pad,
 };
 
-use crate::{constants::PI, point_math::*, camera::*};
+use crate::{camera::*, constants::PI, point_math::*};
 
 pub struct Player {
     buttons: Buttons,
@@ -28,20 +28,29 @@ impl Player {
             peer,
             position: Point::new(120, 80),
             speed: 0.0,
-            camera: Camera::new(800,800),
+            camera: Camera::new(800, 800),
         }
     }
 
     pub fn update(&mut self) {
+        self.update_position();
+        self.update_light_cone();
+    }
+
+    fn update_position(&mut self) {
         // Read touchpad
         if let Some(pad) = read_pad(self.peer) {
             self.direction = -pad.azimuth();
             self.speed = pad.radius();
             self.position = self
                 .position
-                .point_from_distance_and_angle(self.speed * Self::SPEED, self.direction)
-        }
+                .point_from_distance_and_angle(self.speed * Self::SPEED, self.direction);
 
+            self.camera.set_camera_position(self.position);
+        }
+    }
+
+    fn update_light_cone(&mut self) {
         // Read buttons
         let buttons = read_buttons(self.peer);
         let just_pressed = buttons.just_pressed(&self.buttons);
@@ -62,8 +71,6 @@ impl Player {
         if !self.buttons.any() {
             self.color = None;
         }
-
-        self.camera.set_camera_position(self.position);
     }
 
     pub fn draw(&self) {

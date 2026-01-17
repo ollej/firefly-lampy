@@ -6,6 +6,7 @@ use alloc::format;
 
 use firefly_rust as ff;
 
+mod camera;
 mod constants;
 mod drawing;
 mod firefly;
@@ -15,7 +16,6 @@ mod player;
 mod point_math;
 mod rendering;
 mod state;
-mod camera;
 mod utility;
 
 use game_state::*;

@@ -1,4 +1,4 @@
-use firefly_rust::{draw_point, log_debug, Angle, Color, Point};
+use firefly_rust::{Angle, Color, Point, draw_point, log_debug};
 
 use crate::{particles::*, point_math::*, utility::*};
 

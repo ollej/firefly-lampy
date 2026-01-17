@@ -1,25 +1,24 @@
 use firefly_rust::Point;
 
-const SCREEN_WIDTH : i32 = 240;
-const SCREEN_HEIGHT : i32 = 160;
-
+const SCREEN_WIDTH: i32 = 240;
+const SCREEN_HEIGHT: i32 = 160;
 
 pub struct Camera {
     position: Point,
     world_width: i32,
-    world_height: i32
+    world_height: i32,
 }
 
 impl Camera {
     pub fn new(world_width: i32, world_height: i32) -> Self {
         Self {
-            position: Point {x:0,y:0},
+            position: Point { x: 0, y: 0 },
             world_width,
             world_height,
         }
     }
 
-    pub fn set_camera_position(&mut self, position: Point){
+    pub fn set_camera_position(&mut self, position: Point) {
         self.position = position;
     }
 
@@ -61,7 +60,7 @@ impl Camera {
     pub fn follow_player(&mut self, target_pos: Point, smoothness: f32) {
         let target_x = target_pos.x - SCREEN_WIDTH / 2;
         let target_y = target_pos.y - SCREEN_HEIGHT / 2;
-        
+
         let diff_x = ((target_x - self.position.x) as f32 * smoothness) as i32;
         let diff_y = ((target_y - self.position.y) as f32 * smoothness) as i32;
 
