@@ -26,7 +26,7 @@ impl Player {
 
     pub fn update(&mut self) {
         if let Some(pad) = read_pad(self.peer) {
-            self.direction = pad.azimuth();
+            self.direction = -pad.azimuth();
         }
     }
 
