@@ -2,7 +2,6 @@ use firefly_rust::{draw_triangle, log_debug, read_pad, Angle, Color, Peer, Point
 
 use crate::{constants::PI, point_math::*};
 
-#[derive(Clone, Copy)]
 pub struct Player {
     position: Point,
     direction: Angle,
