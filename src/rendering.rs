@@ -1,4 +1,4 @@
-use firefly_rust::{clear_screen, draw_image, Color, Point};
+use firefly_rust::{Color, Point, clear_screen, draw_image};
 
 use crate::{constants::*, drawing::*, state::*};
 

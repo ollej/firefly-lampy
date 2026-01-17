@@ -1,3 +1,4 @@
+use alloc::vec;
 use alloc::{format, vec::Vec};
 use core::cell::OnceCell;
 use firefly_rust::{
@@ -5,19 +6,20 @@ use firefly_rust::{
     Peer, Peers,
 };
 
-use crate::{game_state::*, player::*, rendering::*};
+use crate::{firefly::*, game_state::*, player::*, rendering::*};
 
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
-    pub buttons: Buttons,
+    buttons: Buttons,
+    fireflies: Vec<Firefly>,
     pub font: FileBuf,
-    pub fx: audio::Node<audio::Gain>,
+    fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
-    pub player: Option<Peer>,
-    pub players: Vec<Player>,
+    player: Option<Peer>,
+    players: Vec<Player>,
     pub spritesheet: FileBuf,
-    pub theme: audio::Node<audio::Gain>,
+    theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
 }
 
@@ -25,6 +27,7 @@ impl Default for State {
     fn default() -> Self {
         State {
             buttons: Buttons::default(),
+            fireflies: vec![Firefly::new()],
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
@@ -81,6 +84,9 @@ impl State {
                 for player in self.players.iter_mut() {
                     player.update();
                 }
+                for firefly in self.fireflies.iter_mut() {
+                    firefly.update();
+                }
             }
             GameState::GameOver => {
                 if just_pressed.e {
@@ -94,6 +100,9 @@ impl State {
         clear_screen(Color::White);
         for player in self.players.iter() {
             player.draw();
+        }
+        for firefly in self.fireflies.iter() {
+            firefly.draw();
         }
         render_ui();
     }

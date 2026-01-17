@@ -1,4 +1,4 @@
-use firefly_rust::{math, Angle, Point};
+use firefly_rust::{Angle, Point, math};
 
 pub trait PointMath {
     fn distance(&self, other: &Point) -> f32;
