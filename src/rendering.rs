@@ -19,22 +19,11 @@ pub fn render_died() {
 pub fn render_gameover() {
     let state = get_state();
     state.draw();
-    if state.won {
-        display_centered_message(None, &["You win!", "Press (E) to start next level!"]);
-    } else {
-        display_centered_message(None, &["Game Over!", "Press (E) to start again!"]);
-    }
+    display_centered_message(None, &["Game Over!", "Press (E) to start again!"]);
 }
 
 pub fn render_ui() {
-    let state = get_state();
-    display_text(
-        format!("{}", state.points).as_str(),
-        Point {
-            x: 4,
-            y: FONT_BASE_LINE + 4,
-        },
-    );
+    let _state = get_state();
 }
 
 pub fn render_credits() {

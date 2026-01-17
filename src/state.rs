@@ -16,11 +16,9 @@ pub struct State {
     pub game_state: GameState,
     pub player: Option<Peer>,
     pub players: Vec<Player>,
-    pub points: i32,
     pub spritesheet: FileBuf,
     pub theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
-    pub won: bool,
 }
 
 impl Default for State {
@@ -32,11 +30,9 @@ impl Default for State {
             game_state: GameState::Title,
             player: None,
             players: Vec::new(),
-            points: 0,
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
-            won: false,
         }
     }
 }
@@ -86,18 +82,6 @@ impl State {
             GameState::Playing => {
                 for player in self.players.iter_mut() {
                     player.update();
-                }
-                if just_pressed.s {
-                    //todo!()
-                }
-                if just_released.s {
-                    //todo!()
-                }
-                if just_pressed.w {
-                    //todo!()
-                }
-                if just_pressed.e {
-                    //todo!()
                 }
             }
             GameState::GameOver => {

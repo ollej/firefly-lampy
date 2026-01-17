@@ -9,7 +9,7 @@ pub struct Player {
     buttons: Buttons,
     color: Option<Color>,
     direction: Angle,
-    peer: Peer,
+    pub peer: Peer,
     position: Point,
     speed: f32,
 }
