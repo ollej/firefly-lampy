@@ -18,10 +18,10 @@ pub const INFO: [&str; 5] = [
     "Press (E) to go back to game",
 ];
 
-pub const TILE_WIDTH: i32 = 8;
-pub const TILE_HEIGHT: i32 = 8;
-pub const SPRITES_W: i32 = 16;
-pub const SPRITES_H: i32 = 16;
+pub const TILE_WIDTH: i32 = 16;
+pub const TILE_HEIGHT: i32 = 16;
+pub const SPRITES_W: i32 = 8;
+pub const SPRITES_H: i32 = 8;
 pub const TILES_H: i32 = 30;
 pub const HALF_FONT_WIDTH: i32 = 2;
 pub const FONT_BASE_LINE: i32 = 4;

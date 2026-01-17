@@ -16,7 +16,9 @@ mod player;
 mod point_math;
 mod rendering;
 mod state;
+mod tile;
 mod utility;
+mod world;
 
 use game_state::*;
 use rendering::*;
