@@ -53,8 +53,8 @@ impl ParticleSystem {
         while i < self.particles.len(){
             let p = &mut self.particles[i];
 
-            p.x += (p.vx >> FIXED_POINT_SHIFT) as i32;
-            p.y += (p.vy >> FIXED_POINT_SHIFT) as i32;
+            p.x += (p.vx) as i32;
+            p.y += (p.vy) as i32;
 
             //p.vy = p.vy.saturating_add(GRAVITY);
 
