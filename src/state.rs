@@ -6,7 +6,7 @@ use firefly_rust::{
     read_buttons, read_pad,
 };
 
-use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*};
+use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*, world::*};
 
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
@@ -21,6 +21,7 @@ pub struct State {
     pub spritesheet: FileBuf,
     theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
+    world: World,
 }
 
 impl Default for State {
@@ -36,6 +37,7 @@ impl Default for State {
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
+            world: World::new(50,50),
         }
     }
 }
@@ -101,6 +103,7 @@ impl State {
 
     pub fn draw(&self) {
         clear_screen(Color::White);
+        self.world.draw_all_without_camera();
         for player in self.players.iter() {
             player.draw();
         }
