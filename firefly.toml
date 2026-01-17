@@ -5,7 +5,7 @@ app_name = "Lampy"
 
 [files]
 _splash = { path = "assets/title.png" }
-spritesheet = { path = "assets/spritesheet.png" }
+spritesheet = { path = "assets/spritesheet.png", palette="pico-8" }
 font = { path = "assets/eg_4x6.fff" }
 
 [badges]
