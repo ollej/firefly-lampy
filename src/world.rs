@@ -2,6 +2,7 @@
 use alloc::vec::Vec;
 use crate::drawing::*;
 use crate::tile::Tile;
+use crate::utility::*;
 
 const WORLD_HEIGHT : i32 = 800;
 const WORLD_WIDTH : i32 = 800; 
@@ -19,7 +20,13 @@ impl World {
 
         for y in 0..height {
             for x in 0..width {
-                tiles.push(Tile::new(x,y,0))
+                if y == 0 || y == height || x == 0 || x == width {
+                    tiles.push(Tile::new(x,y,0))
+                } else {
+                    tiles.push(Tile::new(x,y,1)) 
+                }
+
+                
             }
         }
 
