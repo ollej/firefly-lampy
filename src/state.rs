@@ -6,8 +6,7 @@ use firefly_rust::{
     Peer, Peers,
 };
 
-use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*, world::*};
-
+use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*, world::*, tile_array::*};
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
@@ -38,7 +37,7 @@ impl Default for State {
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
-            world: World::new(30,30),
+            world: World::new_from_2d_array(TILE_ARRAY),
         }
     }
 }

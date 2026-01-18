@@ -37,6 +37,25 @@ impl World {
         }
     }
 
+    pub fn new_from_2d_array(data: &[&[i32]]) -> Self {
+        let height = data.len() as i32;
+        let width = data.first().map_or(0, |row|row.len() as i32);
+
+        let mut tiles = Vec::with_capacity((width*height) as usize);
+
+        for (y, row) in data.iter().enumerate() {
+            for (x, &sprite_index) in row.iter().enumerate() {
+                tiles.push(Tile::new(x as i32, y as i32, sprite_index));
+            }
+        }
+
+        Self {
+            tiles,
+            width,
+            height,
+        }
+    }
+
 
     pub fn draw_all_without_camera(&self) { // For testing / debug
         for tile in self.tiles.iter() {

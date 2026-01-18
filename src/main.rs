@@ -17,6 +17,7 @@ mod point_math;
 mod rendering;
 mod state;
 mod tile;
+mod tile_array;
 mod utility;
 mod world;
 
