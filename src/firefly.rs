@@ -1,10 +1,10 @@
 use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
 
-use crate::{camera::*, particles::*, point_math::*, state::*, utility::*, world::*};
+use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
     attracted_to: Option<Point>,
-    color: Color,
+    color: Palette,
     direction: Angle,
     particles: ParticleSystem,
     position: Point,
@@ -15,17 +15,17 @@ impl Firefly {
     pub const MAX_COUNT: i32 = 100;
     const ATTRACTION_DISTANCE: i32 = 40;
     const SPEED: f32 = 1.0;
-    const COLORS: [Color; 4] = [
-        Color::Purple,
-        Color::LightGreen,
-        Color::Yellow,
-        Color::LightBlue,
+    const COLORS: [Palette; 4] = [
+        Palette::LightYellow,
+        Palette::LightGreen,
+        Palette::LightPurple,
+        Palette::LightGray,
     ];
 
     pub fn new() -> Self {
         Firefly {
             attracted_to: None,
-            color: Color::Yellow,
+            color: Palette::Yellow,
             direction: Angle::ZERO,
             particles: ParticleSystem::new(20),
             position: Point::new(10, 10),
@@ -149,7 +149,7 @@ impl Firefly {
             random_range(10, 15) as u8,
             random_range(1, 2) as i16,
             2,
-            self.color,
+            self.color.into(),
         );
         // Spawn trail
         if random_range(0, 60) < 20 {
@@ -159,7 +159,7 @@ impl Firefly {
                 0,
                 0,
                 160,
-                Color::LightGray,
+                Palette::LightGray.into(),
                 1,
             );
         }
@@ -171,7 +171,7 @@ impl Firefly {
         // Debug line from firefly to closest attraction_target
         self.draw_debug_line_to_attraction_point(camera);
         let transformed_position = camera.world_to_screen(self.position);
-        draw_point(transformed_position, self.color);
+        draw_point(transformed_position, self.color.into());
     }
 
     fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
@@ -182,15 +182,15 @@ impl Firefly {
                 from,
                 to,
                 LineStyle {
-                    color: Color::Black,
+                    color: Palette::Black.into(),
                     width: 1,
                 },
             );
         }
     }
 
-    fn random_color() -> Color {
+    fn random_color() -> Palette {
         let idx = random_range(0, 3) as usize;
-        *Self::COLORS.get(idx).unwrap_or(&Color::Purple)
+        *Self::COLORS.get(idx).unwrap_or(&Palette::Purple)
     }
 }

@@ -10,6 +10,7 @@ mod constants;
 mod drawing;
 mod firefly;
 mod game_state;
+mod palette;
 mod particles;
 mod player;
 mod point_math;
@@ -20,10 +21,10 @@ mod tile_array;
 mod utility;
 mod world;
 
+use crate::utility::set_colors;
 use game_state::*;
 use rendering::*;
 use state::*;
-use crate::utility::set_colors;
 
 #[unsafe(no_mangle)]
 extern "C" fn handle_menu(menu_item: u8) {

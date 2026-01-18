@@ -5,14 +5,14 @@ use firefly_rust::{
 };
 
 use crate::{
-    camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, point_math::*,
-    world::*,
+    camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, palette::*,
+    point_math::*, world::*,
 };
 
 pub struct Player {
     pub attraction_target: Point,
     buttons: Buttons,
-    pub color: Option<Color>,
+    pub color: Option<Palette>,
     direction: Angle,
     pub peer: Peer,
     position: Point,
@@ -112,16 +112,16 @@ impl Player {
         //let just_released = buttons.just_released(&self.buttons);
         self.buttons = buttons;
         if just_pressed.n {
-            self.color = Some(Color::Purple);
+            self.color = Some(Palette::LightYellow);
         }
         if just_pressed.e {
-            self.color = Some(Color::LightGreen);
+            self.color = Some(Palette::LightGreen);
         }
         if just_pressed.s {
-            self.color = Some(Color::Yellow);
+            self.color = Some(Palette::LightPurple);
         }
         if just_pressed.w {
-            self.color = Some(Color::LightBlue);
+            self.color = Some(Palette::LightGray);
         }
         if !self.buttons.any() {
             self.color = None;
@@ -166,8 +166,8 @@ impl Player {
                 b,
                 c,
                 Style {
-                    fill_color: color,
-                    stroke_color: color,
+                    fill_color: color.into(),
+                    stroke_color: color.into(),
                     stroke_width: 0,
                 },
             );
