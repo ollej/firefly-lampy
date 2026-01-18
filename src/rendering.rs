@@ -6,22 +6,22 @@ use crate::{constants::*, drawing::*, game_state::*, palette::*, state::*};
 pub fn render_title() {
     let state = get_state();
     draw_image(&state.title.as_image(), Point { x: 0, y: 0 });
-    display_centered_message(Some(Color::White), &["Lampy", "Press (E) to start!"]);
+    display_centered_message(Some(Color::White), &["Lampy", "Press <E>"]);
 }
 
 pub fn render_died() {
     let state = get_state();
     state.draw();
-    display_centered_message(None, &["You died!", "Press (E) to restart level"]);
+    display_centered_message(None, &["You died!", "Press <E>"]);
 }
 
 pub fn render_gameover(won: bool) {
     let state = get_state();
     state.draw();
     if won {
-        display_centered_message(None, &["You win!", "Press (E) to start again!"]);
+        display_centered_message(None, &["You win!", "Press <E>"]);
     } else {
-        display_centered_message(None, &["You lost!", "Press (E) to start again!"]);
+        display_centered_message(None, &["You lost!", "Press <E>"]);
     }
 }
 
@@ -30,7 +30,7 @@ pub fn render_ui() {
     if let Some(player) = state.local_player() {
         display_text_color(
             format!("Points: {}", player.points).as_str(),
-            Point::new(4, 8),
+            Point::new(0, 14),
             Palette::Black.into(),
         );
     }

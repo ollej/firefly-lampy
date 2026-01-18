@@ -50,7 +50,7 @@ pub fn get_state() -> &'static mut State {
 }
 
 impl State {
-    const WIN_POINTS: i32 = 1;
+    const WIN_POINTS: i32 = 10;
 
     pub fn new(player: Peer, peers: Peers) -> Self {
         State {
