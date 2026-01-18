@@ -2,8 +2,6 @@ use firefly_rust::{Color, Point, clear_screen, draw_image};
 
 use crate::{constants::*, drawing::*, state::*};
 
-use alloc::format;
-
 pub fn render_title() {
     let state = get_state();
     draw_image(&state.title.as_image(), Point { x: 0, y: 0 });

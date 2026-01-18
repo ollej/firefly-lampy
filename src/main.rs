@@ -2,7 +2,6 @@
 #![no_main]
 
 extern crate alloc;
-use alloc::format;
 
 use firefly_rust as ff;
 

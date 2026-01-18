@@ -30,7 +30,6 @@ pub fn display_text_color(text: &str, position: Point, color: Color) {
 }
 
 pub fn display_centered_message(color: Option<Color>, lines: &[&str]) {
-    let state = get_state();
     let color = color.unwrap_or(Color::Black);
     let y_pos: i32 = HEIGHT / 2 + FONT_BASE_LINE - lines.len() as i32 * LINE_HEIGHT / 2;
     for (i, line) in lines.iter().enumerate() {

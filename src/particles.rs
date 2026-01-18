@@ -2,7 +2,7 @@ use crate::camera::*;
 use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 use crate::utility::random_range;
 use alloc::vec::Vec;
-use firefly_rust::{Color, Point, draw_point, get_random, log_debug};
+use firefly_rust::{Color, Point, draw_point};
 
 const GRAVITY: i16 = 0;
 
@@ -117,15 +117,15 @@ impl ParticleSystem {
         lifetime: u8,
         color: Color,
     ) {
-        for i in 0..count {
+        for _i in 0..count {
             if self.particles.len() >= self.max_particles {
                 break;
             }
 
             let rand_num = random_range(0, 15);
             let dir = (rand_num) as usize;
-            let vx = (speed * COS_TABLE[dir]);
-            let vy = (speed * SIN_TABLE[dir]);
+            let vx = speed * COS_TABLE[dir];
+            let vy = speed * SIN_TABLE[dir];
             self.spawn(x, y, vx, vy, lifetime, color, 1);
         }
     }

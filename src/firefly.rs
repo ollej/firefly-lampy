@@ -1,7 +1,6 @@
-use alloc::format;
-use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, log_debug, math};
+use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, math};
 
-use crate::{camera::*, particles::*, player::*, point_math::*, state::*, utility::*, world::*};
+use crate::{camera::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
     color: Color,
