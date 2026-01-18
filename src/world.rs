@@ -3,7 +3,7 @@ use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
 use crate::tile::Tile;
 use alloc::vec::Vec;
-use firefly_rust::{Point, log_debug};
+use firefly_rust::{log_debug, Point};
 
 pub struct World {
     tiles: Vec<Tile>,
@@ -85,14 +85,14 @@ impl World {
     pub fn is_blocked(&self, point: Point) -> bool {
         let tile_x = point.x / TILE_WIDTH;
         let tile_y = point.y / TILE_HEIGHT;
-        log_debug("checking blocks");
+        //log_debug("checking blocks");
         let solid = self
             .get_tile(tile_x, tile_y)
             .map(|t| t.solid)
             .unwrap_or(false);
-        if solid {
-            log_debug("solid");
-        }
+        //if solid {
+        //    log_debug("solid");
+        //}
         solid
     }
 

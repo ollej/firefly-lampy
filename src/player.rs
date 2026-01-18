@@ -66,26 +66,36 @@ impl Player {
             }
             log_debug(
                 format!(
-                    "direction: {} speed: {} position: {:?}",
+                    "direction: {} speed: {} remainder: {} position: {:?}",
                     self.direction.to_degrees(),
                     self.speed,
+                    self.remainder,
                     self.position
                 )
                 .as_str(),
             );
-            let (new_position, remainder) = self.position.point_from_distance_and_angle(
-                self.speed * Self::SPEED + self.remainder,
-                self.direction,
-            );
-            self.remainder = remainder;
-            if !world.is_blocked(new_position) {
-                self.position = Point {
-                    x: new_position.x.clamp(0, world.pixel_width - 1),
-                    y: new_position.y.clamp(0, world.pixel_height - 1),
+            if self.speed > 0.0 {
+                let (new_position, remainder) = self.position.point_from_distance_and_angle(
+                    self.speed * Self::SPEED + self.remainder,
+                    self.direction,
+                );
+                if new_position.x <= 0
+                    || new_position.x >= world.pixel_width
+                    || new_position.y <= 0
+                    || new_position.y >= world.pixel_height
+                {
+                    log_debug(format!("new position: {:?}", new_position).as_str());
                 }
-            };
-            self.attraction_target =
-                Self::calculate_attraction_target(self.position, self.direction);
+                self.remainder = remainder;
+                if !world.is_blocked(new_position) {
+                    self.position = Point {
+                        x: new_position.x.clamp(0, world.pixel_width - 1),
+                        y: new_position.y.clamp(0, world.pixel_height - 1),
+                    }
+                };
+                self.attraction_target =
+                    Self::calculate_attraction_target(self.position, self.direction);
+            }
 
             //self.camera.set_camera_position(self.position);
             self.camera.follow_player(self.position, 0.2);
