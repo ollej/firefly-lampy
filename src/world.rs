@@ -45,8 +45,10 @@ impl World {
 
         for (y, row) in data.iter().enumerate() {
             for (x, &sprite_index) in row.iter().enumerate() {
-                let mut solid = true; 
-                if sprite_index == 0 { solid = false }
+                let mut solid = true;
+                if sprite_index == 0 {
+                    solid = false
+                }
                 tiles.push(Tile::new(x as i32, y as i32, sprite_index, solid));
             }
         }
@@ -84,10 +86,14 @@ impl World {
         let tile_x = point.x / TILE_WIDTH;
         let tile_y = point.y / TILE_HEIGHT;
         log_debug("checking blocks");
-        if self.get_tile(tile_x, tile_y).unwrap().solid == true{
+        let solid = self
+            .get_tile(tile_x, tile_y)
+            .map(|t| t.solid)
+            .unwrap_or(false);
+        if solid {
             log_debug("solid");
         }
-        return self.get_tile(tile_x, tile_y).unwrap().solid;
+        solid
     }
 
     pub fn draw(&self, camera: &Camera) {

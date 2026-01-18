@@ -1,3 +1,4 @@
+use alloc::format;
 use firefly_rust::{
     draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
     Point, Style,
@@ -58,6 +59,20 @@ impl Player {
         if let Some(pad) = read_pad(self.peer) {
             self.direction = -pad.azimuth();
             self.speed = pad.radius();
+            if self.direction.to_radians().is_nan() {
+                log_debug("is_nan!");
+                self.direction = Angle::ZERO;
+                self.speed = 0.0;
+            }
+            log_debug(
+                format!(
+                    "direction: {} speed: {} position: {:?}",
+                    self.direction.to_degrees(),
+                    self.speed,
+                    self.position
+                )
+                .as_str(),
+            );
             let (new_position, remainder) = self.position.point_from_distance_and_angle(
                 self.speed * Self::SPEED + self.remainder,
                 self.direction,
@@ -67,7 +82,7 @@ impl Player {
                 self.position = Point {
                     x: new_position.x.clamp(0, world.pixel_width),
                     y: new_position.y.clamp(0, world.pixel_height),
-            }
+                }
             };
             self.attraction_target =
                 Self::calculate_attraction_target(self.position, self.direction);
