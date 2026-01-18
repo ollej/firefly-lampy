@@ -54,14 +54,14 @@ impl Firefly {
     }
 
     fn update_movement(&mut self, world: &World) {
+        self.change_direction();
+
         // Skip movement if at attraction_target
         if Some(self.position) == self.attracted_to {
             //log_debug("at attraction_target");
             self.remainder = 0.0;
             return;
         }
-
-        self.change_direction();
 
         let (new_position, remainder) = self
             .position
