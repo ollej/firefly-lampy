@@ -63,9 +63,11 @@ impl Player {
                 self.direction,
             );
             self.remainder = remainder;
-            self.position = Point {
-                x: new_position.x.clamp(0, world.pixel_width),
-                y: new_position.y.clamp(0, world.pixel_height),
+            if !world.is_blocked(new_position) {
+                self.position = Point {
+                    x: new_position.x.clamp(0, world.pixel_width),
+                    y: new_position.y.clamp(0, world.pixel_height),
+            }
             };
             self.attraction_target =
                 Self::calculate_attraction_target(self.position, self.direction);

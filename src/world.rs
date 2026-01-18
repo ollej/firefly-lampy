@@ -3,7 +3,7 @@ use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
 use crate::tile::Tile;
 use alloc::vec::Vec;
-use firefly_rust::Point;
+use firefly_rust::{log_debug, Point};
 
 pub struct World {
     tiles: Vec<Tile>,
@@ -21,9 +21,9 @@ impl World {
         for y in 0..height {
             for x in 0..width {
                 if y == 0 || y == height || x == 0 || x == width {
-                    tiles.push(Tile::new(x, y, 0))
+                    tiles.push(Tile::new(x, y, 0, false))
                 } else {
-                    tiles.push(Tile::new(x, y, 1))
+                    tiles.push(Tile::new(x, y, 1, false))
                 }
             }
         }
@@ -45,7 +45,9 @@ impl World {
 
         for (y, row) in data.iter().enumerate() {
             for (x, &sprite_index) in row.iter().enumerate() {
-                tiles.push(Tile::new(x as i32, y as i32, sprite_index));
+                let mut solid = true; 
+                if sprite_index == 0 { solid = false }
+                tiles.push(Tile::new(x as i32, y as i32, sprite_index, solid));
             }
         }
 
@@ -76,6 +78,16 @@ impl World {
         } else {
             None
         }
+    }
+
+    pub fn is_blocked(&self, point: Point) -> bool {
+        let tile_x = point.x / TILE_WIDTH;
+        let tile_y = point.y / TILE_HEIGHT;
+        log_debug("checking blocks");
+        if self.get_tile(tile_x, tile_y).unwrap().solid == true{
+            log_debug("solid");
+        }
+        return self.get_tile(tile_x, tile_y).unwrap().solid;
     }
 
     pub fn draw(&self, camera: &Camera) {
