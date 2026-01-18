@@ -67,11 +67,11 @@ impl Firefly {
     fn change_direction_on_wall_hit(&mut self, new_position: Point, world: &World) {
         // Change direction when hitting walls
         if new_position.x < 0 || new_position.x > world.pixel_width {
-            let new_direction = Angle::from_degrees(180.0 - self.direction.to_degrees());
+            let new_direction = Angle::HALF_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }
         if new_position.y < 0 || new_position.y > world.pixel_height {
-            let new_direction = Angle::from_degrees(360.0 - self.direction.to_degrees());
+            let new_direction = Angle::FULL_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }
     }
