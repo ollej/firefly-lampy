@@ -2,6 +2,7 @@ use crate::camera::*;
 use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
 use crate::tile::Tile;
+use crate::utility::random_range;
 use alloc::vec::Vec;
 use firefly_rust::{log_debug, Point};
 
@@ -79,6 +80,19 @@ impl World {
             Some((y * self.width + x) as usize)
         } else {
             None
+        }
+    }
+
+    pub fn random_unblocked_point(&self) -> Point {
+        let point = Point {
+            x: random_range(0, (self.width - 1) as u32) as i32,
+            y: random_range(0, (self.height - 1) as u32) as i32,
+        };
+
+        if self.is_blocked(point) {
+            self.random_unblocked_point()
+        } else {
+            point
         }
     }
 

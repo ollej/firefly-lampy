@@ -59,11 +59,13 @@ impl Player {
         if let Some(pad) = read_pad(self.peer) {
             self.direction = -pad.azimuth();
             self.speed = pad.radius();
+            // Handle when azimuth is NaN
             if self.direction.to_radians().is_nan() {
-                log_debug("is_nan!");
+                //log_debug("is_nan!");
                 self.direction = Angle::ZERO;
                 self.speed = 0.0;
             }
+            /*
             log_debug(
                 format!(
                     "direction: {} speed: {} remainder: {} position: {:?}",
@@ -74,6 +76,7 @@ impl Player {
                 )
                 .as_str(),
             );
+            */
             if self.speed > 0.0 {
                 let (new_position, remainder) = self.position.point_from_distance_and_angle(
                     self.speed * Self::SPEED + self.remainder,
@@ -84,7 +87,7 @@ impl Player {
                     || new_position.y <= 0
                     || new_position.y >= world.pixel_height
                 {
-                    log_debug(format!("new position: {:?}", new_position).as_str());
+                    log_debug(format!("new position outside world: {:?}", new_position).as_str());
                 }
                 self.remainder = remainder;
                 if !world.is_blocked(new_position) {

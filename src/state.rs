@@ -2,7 +2,7 @@ use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, audio, clear_screen, load_file_buf, read_buttons,
+    audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer, Peers,
 };
 
 use crate::{
@@ -87,10 +87,7 @@ impl State {
                     player.update(&self.world);
                 }
                 if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
-                    self.fireflies.push(Firefly::random(
-                        self.world.pixel_width,
-                        self.world.pixel_height,
-                    ));
+                    self.fireflies.push(Firefly::random(&self.world));
                 }
                 for firefly in self.fireflies.iter_mut() {
                     firefly.update(&self.world);

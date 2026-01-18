@@ -31,15 +31,12 @@ impl Firefly {
         }
     }
 
-    pub fn random(width: i32, height: i32) -> Self {
+    pub fn random(world: &World) -> Self {
         Firefly {
             color: Self::random_color(),
             direction: Angle::from_degrees(random_range(0, 360) as f32),
             particles: ParticleSystem::new(20),
-            position: Point::new(
-                random_range(0, width as u32) as i32,
-                random_range(0, height as u32) as i32,
-            ),
+            position: world.random_unblocked_point(),
             remainder: 0.0,
         }
     }
