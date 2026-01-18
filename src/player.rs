@@ -1,9 +1,11 @@
 use firefly_rust::{
-    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
-    Point, Style,
+    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
+    read_pad,
 };
 
-use crate::{camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, point_math::*};
+use crate::{
+    camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, point_math::*,
+};
 
 pub struct Player {
     pub attraction_target: Point,
@@ -91,8 +93,7 @@ impl Player {
     }
 
     fn draw_lamp(&self) {
-
-        let transformed_position : Point = self.camera.world_to_screen(self.position);
+        let transformed_position: Point = self.camera.world_to_screen(self.position);
 
         draw_circle(
             Point {

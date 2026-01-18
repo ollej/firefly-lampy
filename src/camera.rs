@@ -1,5 +1,5 @@
-use firefly_rust::Point;
 use crate::constants::*;
+use firefly_rust::Point;
 
 pub struct Camera {
     position: Point,

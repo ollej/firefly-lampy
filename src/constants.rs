@@ -29,8 +29,7 @@ pub const LINE_HEIGHT: i32 = 8;
 pub const BADGE_WINS: Badge = Badge(1);
 pub const BADGE_DEATHS: Badge = Badge(2);
 pub const PI: f32 = 3.14;
-pub const WORLD_HEIGHT : i32 = 480;
-pub const WORLD_WIDTH : i32 = 480; 
+pub const WORLD_HEIGHT: i32 = 480;
+pub const WORLD_WIDTH: i32 = 480;
 pub const SCREEN_WIDTH: i32 = 240;
 pub const SCREEN_HEIGHT: i32 = 160;
-

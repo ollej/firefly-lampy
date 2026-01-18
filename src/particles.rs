@@ -1,8 +1,8 @@
+use crate::camera::*;
+use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 use crate::utility::random_range;
 use alloc::vec::Vec;
 use firefly_rust::{Color, Point, draw_point, get_random, log_debug};
-use crate::camera::*;
-use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 
 const GRAVITY: i16 = 0;
 
@@ -74,9 +74,9 @@ impl ParticleSystem {
         }
     }
 
-    pub fn render(&self, camera : &Camera) {
+    pub fn render(&self, camera: &Camera) {
         for p in &self.particles {
-            let position = Point {x: p.x, y: p.y};
+            let position = Point { x: p.x, y: p.y };
             let transformed_position = camera.world_to_screen(position);
             draw_point(transformed_position, p.color);
         }

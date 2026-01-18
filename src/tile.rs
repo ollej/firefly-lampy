@@ -1,5 +1,5 @@
+use crate::constants::{TILE_HEIGHT, TILE_WIDTH};
 use firefly_rust::Point;
-use crate::constants::{TILE_WIDTH, TILE_HEIGHT};
 
 #[derive(Clone, Copy)]
 pub struct Tile {
@@ -7,9 +7,8 @@ pub struct Tile {
     pub sprite_index: i32,
 }
 
-
 impl Tile {
-    pub fn new(grid_x : i32, grid_y : i32, sprite_index: i32) -> Self {
+    pub fn new(grid_x: i32, grid_y: i32, sprite_index: i32) -> Self {
         Self {
             position: Point {
                 x: grid_x * TILE_WIDTH,
