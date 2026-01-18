@@ -7,7 +7,7 @@ use firefly_rust::{
 };
 
 use crate::{
-    constants::*, firefly::*, game_state::*, player::*, rendering::*, tile_array::*, utility::*,
+    audio::*, constants::*, firefly::*, game_state::*, player::*, rendering::*, tile_array::*, utility::*,
     world::*,
 };
 pub static mut STATE: OnceCell<State> = OnceCell::new();
@@ -110,6 +110,7 @@ impl State {
                         .find(|player| Some(player.attraction_target) == firefly.attracted_to)
                     {
                         scoring_player.points += 1;
+                        get_audio_player().play_sfx("pling");
                         return false;
                     }
 
