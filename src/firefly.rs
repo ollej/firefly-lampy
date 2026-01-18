@@ -1,8 +1,9 @@
-use firefly_rust::{draw_line, draw_point, math, Angle, Color, LineStyle, Point};
+use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
 
 use crate::{camera::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
+    attracted_to: Option<Point>,
     color: Color,
     direction: Angle,
     particles: ParticleSystem,
@@ -23,6 +24,7 @@ impl Firefly {
 
     pub fn new() -> Self {
         Firefly {
+            attracted_to: None,
             color: Color::Yellow,
             direction: Angle::ZERO,
             particles: ParticleSystem::new(20),
@@ -33,12 +35,17 @@ impl Firefly {
 
     pub fn random(world: &World) -> Self {
         Firefly {
+            attracted_to: None,
             color: Self::random_color(),
-            direction: Angle::from_degrees(random_range(0, 360) as f32),
+            direction: Self::random_direction(),
             particles: ParticleSystem::new(20),
             position: world.random_unblocked_point(),
             remainder: 0.0,
         }
+    }
+
+    fn random_direction() -> Angle {
+        Angle::from_degrees(random_range(0, 360) as f32)
     }
 
     pub fn update(&mut self, world: &World) {
@@ -47,7 +54,15 @@ impl Firefly {
     }
 
     fn update_movement(&mut self, world: &World) {
+        // Skip movement if at attraction_target
+        if Some(self.position) == self.attracted_to {
+            //log_debug("at attraction_target");
+            self.remainder = 0.0;
+            return;
+        }
+
         self.change_direction();
+
         let (new_position, remainder) = self
             .position
             .point_from_distance_and_angle(Self::SPEED + self.remainder, self.direction);
@@ -87,7 +102,12 @@ impl Firefly {
     fn change_direction(&mut self) {
         if let Some(attraction_target) = self.find_closest_target() {
             // Set direction towards closest attraction target within reach
+            self.attracted_to = Some(attraction_target);
             self.direction = self.position.angle_to(&attraction_target);
+        } else if self.attracted_to.is_some() {
+            //log_debug("lost attraction_target");
+            self.attracted_to = None;
+            self.direction = Self::random_direction();
         } else {
             // Change direction randomly +/- degrees
             let direction_change = Angle::from_degrees(random_range(0, 10) as f32 - 5.0);
@@ -160,7 +180,7 @@ impl Firefly {
     }
 
     fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
-        if let Some(attraction_target) = self.find_closest_target() {
+        if let Some(attraction_target) = self.attracted_to {
             let from = camera.world_to_screen(self.position);
             let to = camera.world_to_screen(attraction_target);
             draw_line(
