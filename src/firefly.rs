@@ -27,7 +27,7 @@ impl Firefly {
             attracted_to: None,
             color: Palette::Yellow,
             direction: Angle::ZERO,
-            particles: ParticleSystem::new(20),
+            particles: ParticleSystem::new(100),
             position: Point::new(10, 10),
             remainder: 0.0,
         }
@@ -142,6 +142,19 @@ impl Firefly {
     }
 
     fn spawn_particles(&mut self) {
+        // Spawn trail
+        if random_range(0, 60) < 20 {
+            self.particles.spawn(
+                self.position.x,
+                self.position.y,
+                0,
+                0,
+                30,
+                self.color.into(),
+                1,
+            );
+        }
+
         // Spawn firefly flash
         self.particles.spawn_radial_burst(
             self.position.x,
@@ -151,18 +164,6 @@ impl Firefly {
             2,
             self.color.into(),
         );
-        // Spawn trail
-        if random_range(0, 60) < 20 {
-            self.particles.spawn(
-                self.position.x,
-                self.position.y,
-                0,
-                0,
-                160,
-                Palette::LightGray.into(),
-                1,
-            );
-        }
         self.particles.update();
     }
 

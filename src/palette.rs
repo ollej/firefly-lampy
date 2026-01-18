@@ -15,10 +15,10 @@ pub enum Palette {
     Purple,      // 10 = 0x2f213b
     LightPurple, // 11 = 0x433a60
     DarkBlue,    // 12 = 0x4f5277
-    Blue,        // 13 = 0x65738c
-    DarkGray,    // 14 = 0x7c94a1
-    Gray,        // 15 = 0xa0b9ba
-    LightGray,   // 16 = 0xc0d1cc
+    Blue,        // 13 = 0xde5d49
+    DarkGray,    // 14 = 0xe533e8
+    Gray,        // 15 = 0x70eb44
+    LightGray,   // 16 = 0x43b1e8
 }
 
 impl From<Palette> for Color {
