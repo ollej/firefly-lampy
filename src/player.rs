@@ -112,16 +112,16 @@ impl Player {
         //let just_released = buttons.just_released(&self.buttons);
         self.buttons = buttons;
         if just_pressed.n {
-            self.color = Some(Palette::LightYellow);
+            self.color = Some(Palette::SoftRed);
         }
         if just_pressed.e {
-            self.color = Some(Palette::LightGreen);
+            self.color = Some(Palette::BrightMagenta);
         }
         if just_pressed.s {
-            self.color = Some(Palette::LightPurple);
+            self.color = Some(Palette::BrightGreen);
         }
         if just_pressed.w {
-            self.color = Some(Palette::LightGray);
+            self.color = Some(Palette::BrightBlue);
         }
         if !self.buttons.any() {
             self.color = None;

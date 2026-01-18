@@ -16,10 +16,10 @@ impl Firefly {
     const ATTRACTION_DISTANCE: i32 = 40;
     const SPEED: f32 = 1.0;
     const COLORS: [Palette; 4] = [
-        Palette::LightYellow,
-        Palette::LightGreen,
-        Palette::LightPurple,
-        Palette::LightGray,
+        Palette::SoftRed,
+        Palette::BrightMagenta,
+        Palette::BrightGreen,
+        Palette::BrightBlue,
     ];
 
     pub fn new() -> Self {
