@@ -3,7 +3,7 @@ use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineSty
 use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
-    attracted_to: Option<Point>,
+    pub attracted_to: Option<Point>,
     color: Palette,
     direction: Angle,
     particles: ParticleSystem,
@@ -51,6 +51,10 @@ impl Firefly {
     pub fn update(&mut self, world: &World) {
         self.update_movement(world);
         self.spawn_particles();
+    }
+
+    pub fn is_in_goal(&self, world: &World) -> bool {
+        world.is_in_goal(self.position)
     }
 
     fn update_movement(&mut self, world: &World) {

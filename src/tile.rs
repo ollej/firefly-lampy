@@ -23,4 +23,11 @@ impl Tile {
     pub fn is_solid(&self) -> bool {
         self.solid
     }
+
+    pub fn is_goal(&self) -> bool {
+        self.sprite_index == 16
+            || self.sprite_index == 17
+            || self.sprite_index == 24
+            || self.sprite_index == 25
+    }
 }

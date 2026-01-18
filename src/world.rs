@@ -110,6 +110,14 @@ impl World {
         solid
     }
 
+    pub fn is_in_goal(&self, point: Point) -> bool {
+        let tile_x = point.x / TILE_WIDTH;
+        let tile_y = point.y / TILE_HEIGHT;
+        self.get_tile(tile_x, tile_y)
+            .map(|t| t.is_goal())
+            .unwrap_or(false)
+    }
+
     pub fn draw(&self, camera: &Camera) {
         let screen_start = camera.screen_to_world(Point { x: 0, y: 0 });
         let screen_end = camera.screen_to_world(Point {

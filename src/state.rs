@@ -92,6 +92,20 @@ impl State {
                 for firefly in self.fireflies.iter_mut() {
                     firefly.update(&self.world);
                 }
+                self.fireflies.retain(|firefly| {
+                    if !firefly.is_in_goal(&self.world) {
+                        return true;
+                    }
+                    if let Some(scoring_player) = self
+                        .players
+                        .iter_mut()
+                        .find(|player| Some(player.position) == firefly.attracted_to)
+                    {
+                        scoring_player.points += 1;
+                    }
+
+                    false
+                });
             }
             GameState::GameOver => {
                 if just_pressed.e {
