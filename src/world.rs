@@ -47,9 +47,15 @@ impl World {
         for (y, row) in data.iter().enumerate() {
             for (x, &sprite_index) in row.iter().enumerate() {
                 let mut solid = true;
-                if sprite_index == 0 {
+                if sprite_index == 0
+                    || sprite_index == 16
+                    || sprite_index == 17
+                    || sprite_index == 24
+                    || sprite_index == 25
+                {
                     solid = false
                 }
+
                 tiles.push(Tile::new(x as i32, y as i32, sprite_index, solid));
             }
         }
@@ -102,7 +108,7 @@ impl World {
         //log_debug("checking blocks");
         let solid = self
             .get_tile(tile_x, tile_y)
-            .map(|t| t.solid)
+            .map(|t| t.is_solid())
             .unwrap_or(false);
         //if solid {
         //    log_debug("solid");

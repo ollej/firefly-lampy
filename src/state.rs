@@ -1,8 +1,10 @@
+use alloc::format;
 use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
 use firefly_rust::{
-    audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer, Peers,
+    audio, clear_screen, load_file_buf, log_debug, read_buttons, Buttons, Color, FileBuf, Peer,
+    Peers,
 };
 
 use crate::{
@@ -96,15 +98,18 @@ impl State {
                     if !firefly.is_in_goal(&self.world) {
                         return true;
                     }
+
+                    // Score point for fireflies turned in at goal
                     if let Some(scoring_player) = self
                         .players
                         .iter_mut()
-                        .find(|player| Some(player.position) == firefly.attracted_to)
+                        .find(|player| Some(player.attraction_target) == firefly.attracted_to)
                     {
                         scoring_player.points += 1;
+                        return false;
                     }
 
-                    false
+                    true
                 });
             }
             GameState::GameOver => {

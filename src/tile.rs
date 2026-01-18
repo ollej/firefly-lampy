@@ -5,7 +5,7 @@ use firefly_rust::Point;
 pub struct Tile {
     pub position: Point,
     pub sprite_index: i32,
-    pub solid: bool,
+    solid: bool,
 }
 
 impl Tile {
