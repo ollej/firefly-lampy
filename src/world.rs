@@ -2,7 +2,7 @@
 use alloc::vec::Vec;
 use firefly_rust::{Point};
 use crate::drawing::*;
-use crate::constants::{TILE_HEIGHT, TILE_WIDTH};
+use crate::constants::{TILE_HEIGHT, TILE_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 use crate::tile::Tile;
 use crate::utility::*;
 use crate::camera::*;
@@ -78,7 +78,7 @@ impl World {
 
     pub fn draw(&self, camera : &Camera) {
         let screen_start = camera.screen_to_world(Point {x: 0, y: 0});
-        let screen_end = camera.screen_to_world(Point{x: 240, y:140});
+        let screen_end = camera.screen_to_world(Point{x: SCREEN_WIDTH, y:SCREEN_HEIGHT});
 
         let start_x = (screen_start.x / TILE_WIDTH).max(0);
         let start_y = (screen_start.y / TILE_HEIGHT).max(0);
