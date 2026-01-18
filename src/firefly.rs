@@ -60,6 +60,20 @@ impl Firefly {
             x: new_position.x.clamp(0, world.pixel_width),
             y: new_position.y.clamp(0, world.pixel_height),
         };
+
+        self.change_direction_on_wall_hit(new_position, world);
+    }
+
+    fn change_direction_on_wall_hit(&mut self, new_position: Point, world: &World) {
+        // Change direction when hitting walls
+        if new_position.x < 0 || new_position.x > world.pixel_width {
+            let new_direction = Angle::from_degrees(180.0 - self.direction.to_degrees());
+            self.direction = new_direction.normalize();
+        }
+        if new_position.y < 0 || new_position.y > world.pixel_height {
+            let new_direction = Angle::from_degrees(360.0 - self.direction.to_degrees());
+            self.direction = new_direction.normalize();
+        }
     }
 
     fn change_direction(&mut self) {
@@ -68,7 +82,9 @@ impl Firefly {
             self.direction = self.position.angle_to(&attraction_target);
         } else {
             // Change direction randomly +/- degrees
-            self.direction += Angle::from_degrees(random_range(0, 10) as f32 - 5.0).normalize();
+            let direction_change = Angle::from_degrees(random_range(0, 10) as f32 - 5.0);
+            let new_direction = self.direction + direction_change;
+            self.direction = new_direction.normalize();
         }
     }
 
