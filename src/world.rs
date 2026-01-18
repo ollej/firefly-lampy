@@ -85,8 +85,8 @@ impl World {
 
     pub fn random_unblocked_point(&self) -> Point {
         let point = Point {
-            x: random_range(0, (self.width - 1) as u32) as i32,
-            y: random_range(0, (self.height - 1) as u32) as i32,
+            x: random_range(0, (self.pixel_width - 1) as u32) as i32,
+            y: random_range(0, (self.pixel_height - 1) as u32) as i32,
         };
 
         if self.is_blocked(point) {
