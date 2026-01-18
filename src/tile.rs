@@ -16,7 +16,7 @@ impl Tile {
                 y: grid_y * TILE_HEIGHT,
             },
             sprite_index,
-            solid : is_solid,
+            solid: is_solid,
         }
     }
 
@@ -24,4 +24,3 @@ impl Tile {
         self.solid
     }
 }
-

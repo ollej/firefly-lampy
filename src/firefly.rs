@@ -1,5 +1,5 @@
 use alloc::format;
-use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
+use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, log_debug, math};
 
 use crate::{camera::*, particles::*, player::*, point_math::*, state::*, utility::*, world::*};
 

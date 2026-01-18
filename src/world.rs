@@ -3,7 +3,7 @@ use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
 use crate::tile::Tile;
 use alloc::vec::Vec;
-use firefly_rust::{log_debug, Point};
+use firefly_rust::{Point, log_debug};
 
 pub struct World {
     tiles: Vec<Tile>,
