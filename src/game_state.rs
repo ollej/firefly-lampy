@@ -4,5 +4,5 @@ pub enum GameState {
     Credits,
     Info,
     Died,
-    GameOver,
+    GameOver(bool),
 }

@@ -50,6 +50,8 @@ pub fn get_state() -> &'static mut State {
 }
 
 impl State {
+    const WIN_POINTS: i32 = 10;
+
     pub fn new(player: Peer, peers: Peers) -> Self {
         State {
             players: peers.iter().map(|peer| Player::new(peer)).collect(),
@@ -111,8 +113,17 @@ impl State {
 
                     true
                 });
+
+                // Check win condition
+                if let Some(winner) = self
+                    .players
+                    .iter()
+                    .find(|player| player.points >= Self::WIN_POINTS)
+                {
+                    self.game_state = GameState::GameOver(Some(winner.peer) == self.me);
+                }
             }
-            GameState::GameOver => {
+            GameState::GameOver(_won) => {
                 if just_pressed.e {
                     self.restart();
                 }

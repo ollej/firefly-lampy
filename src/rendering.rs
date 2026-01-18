@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{clear_screen, draw_image, Color, Point};
 
-use crate::{constants::*, drawing::*, palette::*, state::*};
+use crate::{constants::*, drawing::*, game_state::*, palette::*, state::*};
 
 pub fn render_title() {
     let state = get_state();
@@ -15,10 +15,14 @@ pub fn render_died() {
     display_centered_message(None, &["You died!", "Press (E) to restart level"]);
 }
 
-pub fn render_gameover() {
+pub fn render_gameover(won: bool) {
     let state = get_state();
     state.draw();
-    display_centered_message(None, &["Game Over!", "Press (E) to start again!"]);
+    if won {
+        display_centered_message(None, &["You win!", "Press (E) to start again!"]);
+    } else {
+        display_centered_message(None, &["You lost!", "Press (E) to start again!"]);
+    }
 }
 
 pub fn render_ui() {

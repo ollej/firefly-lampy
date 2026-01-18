@@ -64,6 +64,6 @@ extern "C" fn render() {
         GameState::Info => render_info(),
         GameState::Playing => state.draw(),
         GameState::Died => render_died(),
-        GameState::GameOver => render_gameover(),
+        GameState::GameOver(won) => render_gameover(won),
     }
 }
