@@ -14,6 +14,7 @@ mod palette;
 mod particles;
 mod player;
 mod point_math;
+mod audio;
 mod rendering;
 mod state;
 mod tile;
@@ -25,6 +26,7 @@ use crate::utility::set_colors;
 use game_state::*;
 use rendering::*;
 use state::*;
+use audio::*;
 
 #[unsafe(no_mangle)]
 extern "C" fn handle_menu(menu_item: u8) {
@@ -43,10 +45,14 @@ extern "C" fn boot() {
     let me = ff::get_me();
     #[allow(static_mut_refs)]
     unsafe { STATE.set(State::new(me, peers)) }.ok().unwrap();
+    #[allow(static_mut_refs)]
+    unsafe { AUDIO.set(AudioPlayer::new())}.ok().unwrap();
     set_colors();
     ff::add_menu_item(1, "Credits");
     ff::add_menu_item(2, "Restart");
     ff::add_menu_item(3, "Info");
+
+    get_audio_player().play_music("music_loop");
 }
 
 #[unsafe(no_mangle)]
