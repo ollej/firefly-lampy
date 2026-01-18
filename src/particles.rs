@@ -1,9 +1,8 @@
 use crate::utility::random_range;
 use alloc::vec::Vec;
 use firefly_rust::{Color, Point, draw_point, get_random, log_debug};
-
-const SCREEN_WIDTH: i32 = 240;
-const SCREEN_HEIGHT: i32 = 160;
+use crate::camera::*;
+use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 
 const GRAVITY: i16 = 0;
 
@@ -65,7 +64,7 @@ impl ParticleSystem {
             p.lifetime = p.lifetime.saturating_sub(1);
 
             let out_of_bounds =
-                p.x < -5 || p.x > SCREEN_WIDTH + 5 || p.y < -5 || p.y > SCREEN_HEIGHT + 5;
+                p.x < -5 || p.x > WORLD_WIDTH + 5 || p.y < -5 || p.y > WORLD_HEIGHT + 5;
 
             if p.lifetime <= 0 || out_of_bounds {
                 self.particles.swap_remove(i);
@@ -75,9 +74,11 @@ impl ParticleSystem {
         }
     }
 
-    pub fn render(&self) {
+    pub fn render(&self, camera : &Camera) {
         for p in &self.particles {
-            draw_point(Point { x: p.x, y: p.y }, p.color);
+            let position = Point {x: p.x, y: p.y};
+            let transformed_position = camera.world_to_screen(position);
+            draw_point(transformed_position, p.color);
         }
     }
 

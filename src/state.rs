@@ -108,16 +108,17 @@ impl State {
         let local_player = self.me.and_then(|me| self.players.iter().find(|p| p.peer == me));
         if let Some(player) = local_player {
             self.world.draw(&player.camera);
+
+            for player in self.players.iter() {
+                player.draw();
+            }
+            for firefly in self.fireflies.iter() {
+                firefly.draw(&player.camera);
+            }
+            render_ui();
         }
 
 
-        for player in self.players.iter() {
-            player.draw();
-        }
-        for firefly in self.fireflies.iter() {
-            firefly.draw();
-        }
-        render_ui();
     }
 
     pub fn restart(&mut self) {

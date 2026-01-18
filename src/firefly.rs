@@ -1,6 +1,6 @@
 use firefly_rust::{draw_point, log_debug, math, Angle, Color, Point};
 
-use crate::{particles::*, point_math::*, state::*, utility::*};
+use crate::{particles::*, point_math::*, state::*, utility::*, camera::*};
 
 pub struct Firefly {
     direction: Angle,
@@ -111,9 +111,10 @@ impl Firefly {
         self.particles.update();
     }
 
-    pub fn draw(&self) {
-        self.particles.render();
-        draw_point(self.position, self.color);
+    pub fn draw(&self, camera: &Camera) {
+        self.particles.render(camera);
+        let transformed_position = camera.world_to_screen(self.position); 
+        draw_point(transformed_position, self.color);
     }
 
     fn random_color() -> Color {
