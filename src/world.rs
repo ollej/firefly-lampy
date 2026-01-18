@@ -2,14 +2,15 @@ use crate::camera::*;
 use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
 use crate::tile::Tile;
-use crate::utility::*;
 use alloc::vec::Vec;
 use firefly_rust::Point;
 
 pub struct World {
     tiles: Vec<Tile>,
-    pub width: i32,
-    pub height: i32,
+    width: i32,
+    height: i32,
+    pub pixel_width: i32,
+    pub pixel_height: i32,
 }
 
 impl World {
@@ -31,6 +32,8 @@ impl World {
             tiles,
             width,
             height,
+            pixel_width: width * TILE_WIDTH,
+            pixel_height: height * TILE_HEIGHT,
         }
     }
 
@@ -50,6 +53,8 @@ impl World {
             tiles,
             width,
             height,
+            pixel_width: width * TILE_WIDTH,
+            pixel_height: height * TILE_HEIGHT,
         }
     }
 

@@ -2,8 +2,8 @@ use alloc::vec;
 use alloc::{format, vec::Vec};
 use core::cell::OnceCell;
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, audio, clear_screen, load_file_buf, log_debug,
-    read_buttons, read_pad,
+    audio, clear_screen, load_file_buf, log_debug, read_buttons, read_pad, Buttons, Color, FileBuf,
+    Peer, Peers,
 };
 
 use crate::{
@@ -85,11 +85,13 @@ impl State {
             }
             GameState::Playing => {
                 for player in self.players.iter_mut() {
-                    player.update();
+                    player.update(&self.world);
                 }
                 if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
-                    self.fireflies
-                        .push(Firefly::random(self.world.width, self.world.height));
+                    self.fireflies.push(Firefly::random(
+                        self.world.pixel_width,
+                        self.world.pixel_height,
+                    ));
                 }
                 for firefly in self.fireflies.iter_mut() {
                     firefly.update(&self.world);

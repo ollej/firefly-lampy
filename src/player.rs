@@ -1,10 +1,11 @@
 use firefly_rust::{
-    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
+    Point, Style,
 };
 
 use crate::{
     camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, point_math::*,
+    world::*,
 };
 
 pub struct Player {
@@ -14,6 +15,7 @@ pub struct Player {
     direction: Angle,
     pub peer: Peer,
     position: Point,
+    remainder: f32,
     speed: f32,
     pub camera: Camera,
 }
@@ -34,28 +36,37 @@ impl Player {
             direction,
             peer,
             position,
+            remainder: 0.0,
             speed: 0.0,
             camera: Camera::new(WORLD_WIDTH, WORLD_HEIGHT),
         }
     }
 
     fn calculate_attraction_target(position: Point, direction: Angle) -> Point {
-        position.point_from_distance_and_angle(Self::ATTRACTION_LENGTH, direction)
+        let (new_position, _remainder) =
+            position.point_from_distance_and_angle(Self::ATTRACTION_LENGTH, direction);
+        new_position
     }
 
-    pub fn update(&mut self) {
-        self.update_position();
+    pub fn update(&mut self, world: &World) {
+        self.update_position(world);
         self.update_light_cone();
     }
 
-    fn update_position(&mut self) {
+    fn update_position(&mut self, world: &World) {
         // Read touchpad
         if let Some(pad) = read_pad(self.peer) {
             self.direction = -pad.azimuth();
             self.speed = pad.radius();
-            self.position = self
-                .position
-                .point_from_distance_and_angle(self.speed * Self::SPEED, self.direction);
+            let (new_position, remainder) = self.position.point_from_distance_and_angle(
+                self.speed * Self::SPEED + self.remainder,
+                self.direction,
+            );
+            self.remainder = remainder;
+            self.position = Point {
+                x: new_position.x.clamp(0, world.pixel_width),
+                y: new_position.y.clamp(0, world.pixel_height),
+            };
             self.attraction_target =
                 Self::calculate_attraction_target(self.position, self.direction);
 
@@ -112,11 +123,11 @@ impl Player {
     fn draw_light_cone(&self) {
         if let Some(color) = self.color {
             let a = self.camera.world_to_screen(self.position);
-            let b = a.point_from_distance_and_angle(
+            let (b, _) = a.point_from_distance_and_angle(
                 Self::CONE_LENGTH,
                 self.direction - Self::CONE_ANGLE,
             );
-            let c = a.point_from_distance_and_angle(
+            let (c, _) = a.point_from_distance_and_angle(
                 Self::CONE_LENGTH,
                 self.direction + Self::CONE_ANGLE,
             );

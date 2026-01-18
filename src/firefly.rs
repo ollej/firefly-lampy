@@ -1,12 +1,14 @@
-use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, log_debug, math};
+use alloc::format;
+use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
 
 use crate::{camera::*, particles::*, player::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
-    direction: Angle,
-    position: Point,
     color: Color,
+    direction: Angle,
     particles: ParticleSystem,
+    position: Point,
+    remainder: f32,
 }
 
 impl Firefly {
@@ -26,6 +28,7 @@ impl Firefly {
             direction: Angle::ZERO,
             particles: ParticleSystem::new(20),
             position: Point::new(10, 10),
+            remainder: 0.0,
         }
     }
 
@@ -38,6 +41,7 @@ impl Firefly {
                 random_range(0, width as u32) as i32,
                 random_range(0, height as u32) as i32,
             ),
+            remainder: 0.0,
         }
     }
 
@@ -48,22 +52,23 @@ impl Firefly {
 
     fn update_movement(&mut self, world: &World) {
         self.change_direction();
-        let new_position = self
+        let (new_position, remainder) = self
             .position
-            .point_from_distance_and_angle(Self::SPEED, self.direction);
+            .point_from_distance_and_angle(Self::SPEED + self.remainder, self.direction);
+        self.remainder = remainder;
         self.position = Point {
-            x: new_position.x.clamp(0, world.width),
-            y: new_position.y.clamp(0, world.height),
+            x: new_position.x.clamp(0, world.pixel_width),
+            y: new_position.y.clamp(0, world.pixel_height),
         };
     }
 
     fn change_direction(&mut self) {
         if let Some(attraction_target) = self.find_closest_target() {
             // Set direction towards closest attraction target within reach
-            self.direction = self.position.angle_to(&attraction_target)
+            self.direction = self.position.angle_to(&attraction_target);
         } else {
-            // Change direction randomly +/- 5 degrees
-            self.direction += Angle::from_degrees(random_range(0, 10) as f32 - 5.0).normalize()
+            // Change direction randomly +/- degrees
+            self.direction += Angle::from_degrees(random_range(0, 10) as f32 - 5.0).normalize();
         }
     }
 
