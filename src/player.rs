@@ -25,7 +25,7 @@ impl Player {
     const CONE_ANGLE: Angle = Angle::from_radians(PI / 20.0);
     const CONE_LENGTH: f32 = 25.0;
     const ATTRACTION_LENGTH: f32 = 20.0;
-    const SPEED: f32 = 0.001;
+    const SPEED: f32 = 0.002;
 
     pub fn new(peer: Peer) -> Self {
         let direction = Angle::ZERO;
