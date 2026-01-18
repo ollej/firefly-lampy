@@ -118,10 +118,7 @@ impl State {
     pub fn draw(&self) {
         clear_screen(Color::White);
 
-        let local_player = self
-            .me
-            .and_then(|me| self.players.iter().find(|p| p.peer == me));
-        if let Some(player) = local_player {
+        if let Some(player) = self.local_player() {
             self.world.draw(&player.camera);
 
             for player in self.players.iter() {
@@ -136,5 +133,10 @@ impl State {
 
     pub fn restart(&mut self) {
         todo!()
+    }
+
+    pub fn local_player(&self) -> Option<&Player> {
+        self.me
+            .and_then(|me| self.players.iter().find(|p| p.peer == me))
     }
 }

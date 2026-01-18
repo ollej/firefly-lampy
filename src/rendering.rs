@@ -1,6 +1,7 @@
-use firefly_rust::{Color, Point, clear_screen, draw_image};
+use alloc::format;
+use firefly_rust::{clear_screen, draw_image, Color, Point};
 
-use crate::{constants::*, drawing::*, state::*};
+use crate::{constants::*, drawing::*, palette::*, state::*};
 
 pub fn render_title() {
     let state = get_state();
@@ -21,7 +22,14 @@ pub fn render_gameover() {
 }
 
 pub fn render_ui() {
-    let _state = get_state();
+    let state = get_state();
+    if let Some(player) = state.local_player() {
+        display_text_color(
+            format!("Points: {}", player.points).as_str(),
+            Point::new(4, 8),
+            Palette::Black.into(),
+        );
+    }
 }
 
 pub fn render_credits() {
