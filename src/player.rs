@@ -58,7 +58,7 @@ impl Player {
                 Self::calculate_attraction_target(self.position, self.direction);
 
             //self.camera.set_camera_position(self.position);
-            self.camera.follow_player(self.position, 0.4);
+            self.camera.follow_player(self.position, 0.2);
         }
     }
 
