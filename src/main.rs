@@ -5,6 +5,7 @@ extern crate alloc;
 
 use firefly_rust as ff;
 
+mod audio;
 mod camera;
 mod constants;
 mod drawing;
@@ -14,7 +15,6 @@ mod palette;
 mod particles;
 mod player;
 mod point_math;
-mod audio;
 mod rendering;
 mod state;
 mod tile;
@@ -23,11 +23,26 @@ mod utility;
 mod world;
 
 use crate::utility::set_colors;
+use audio::*;
 use game_state::*;
 use rendering::*;
 use state::*;
-use audio::*;
 
+#[unsafe(no_mangle)]
+extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
+    let state = get_state();
+    match cmd {
+        1 => {
+            state.restart();
+            1
+        }
+        2 => {
+            state.debug = val == 1;
+            1
+        }
+        _ => 0,
+    }
+}
 #[unsafe(no_mangle)]
 extern "C" fn handle_menu(menu_item: u8) {
     let state = get_state();
@@ -46,7 +61,7 @@ extern "C" fn boot() {
     #[allow(static_mut_refs)]
     unsafe { STATE.set(State::new(me, peers)) }.ok().unwrap();
     #[allow(static_mut_refs)]
-    unsafe { AUDIO.set(AudioPlayer::new())}.ok().unwrap();
+    unsafe { AUDIO.set(AudioPlayer::new()) }.ok().unwrap();
     set_colors();
     ff::add_menu_item(1, "Credits");
     ff::add_menu_item(2, "Restart");

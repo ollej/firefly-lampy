@@ -174,7 +174,10 @@ impl Firefly {
     pub fn draw(&self, camera: &Camera) {
         self.particles.render(camera);
         // Debug line from firefly to closest attraction_target
-        self.draw_debug_line_to_attraction_point(camera);
+        let state = get_state();
+        if state.debug {
+            self.draw_debug_line_to_attraction_point(camera);
+        }
         let transformed_position = camera.world_to_screen(self.position);
         draw_point(transformed_position, self.color.into());
     }

@@ -14,6 +14,10 @@ pling = { path = "assets/score.wav" }
 1 = { name = "wins", steps = 10, descr = "Win 10 times" }
 2 = { name = "deaths", steps = 10, descr = "Die 10 times" }
 
+[cheats]
+restart = 1
+debug = 2
+
 # https://lospec.com/palette-list/steam-lords
 [palettes.steam-lords]
 1 = 0x213b25

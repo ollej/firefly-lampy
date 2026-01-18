@@ -14,6 +14,7 @@ pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
     buttons: Buttons,
+    pub debug: bool,
     fireflies: Vec<Firefly>,
     pub font: FileBuf,
     fx: audio::Node<audio::Gain>,
@@ -30,6 +31,7 @@ impl Default for State {
     fn default() -> Self {
         State {
             buttons: Buttons::default(),
+            debug: false,
             fireflies: vec![],
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
