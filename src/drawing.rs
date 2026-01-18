@@ -8,8 +8,8 @@ pub fn draw_tile(sprite: Sprite, point: Point) {
     let state = get_state();
     let tile_sprite = state.spritesheet.as_image().sub(
         Point {
-            x: ((sprite % SPRITES_H) * TILE_WIDTH),
-            y: ((sprite / SPRITES_H) * TILE_HEIGHT),
+            x: ((sprite % 8) * TILE_WIDTH),
+            y: ((sprite / 8) * TILE_HEIGHT),
         },
         Size {
             width: SPRITES_W,
