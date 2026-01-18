@@ -1,6 +1,6 @@
-use firefly_rust::{draw_point, log_debug, math, Angle, Color, Point};
+use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
 
-use crate::{particles::*, point_math::*, state::*, utility::*, camera::*};
+use crate::{camera::*, particles::*, player::*, point_math::*, state::*, utility::*, world::*};
 
 pub struct Firefly {
     direction: Angle,
@@ -11,7 +11,7 @@ pub struct Firefly {
 
 impl Firefly {
     pub const MAX_COUNT: i32 = 20;
-    const ATTRACTION_DISTANCE: i32 = 10;
+    const ATTRACTION_DISTANCE: i32 = 20;
     const SPEED: f32 = 1.0;
     const COLORS: [Color; 4] = [
         Color::Purple,
@@ -29,37 +29,41 @@ impl Firefly {
         }
     }
 
-    pub fn random() -> Self {
+    pub fn random(width: i32, height: i32) -> Self {
         Firefly {
             color: Self::random_color(),
             direction: Angle::from_degrees(random_range(0, 360) as f32),
             particles: ParticleSystem::new(20),
-            position: Point::new(random_range(0, 240) as i32, random_range(0, 160) as i32),
+            position: Point::new(
+                random_range(0, width as u32) as i32,
+                random_range(0, height as u32) as i32,
+            ),
         }
     }
 
-    pub fn update(&mut self) {
-        self.update_movement();
+    pub fn update(&mut self, world: &World) {
+        self.update_movement(world);
         //self.spawn_particles();
     }
 
-    fn update_movement(&mut self) {
-        let direction_change = self.direction_change();
-        self.direction = self.direction + direction_change;
+    fn update_movement(&mut self, world: &World) {
+        self.change_direction();
         let new_position = self
             .position
             .point_from_distance_and_angle(Self::SPEED, self.direction);
         self.position = Point {
-            x: new_position.x.clamp(0, 240),
-            y: new_position.y.clamp(0, 160),
+            x: new_position.x.clamp(0, world.width),
+            y: new_position.y.clamp(0, world.height),
         };
     }
 
-    fn direction_change(&self) -> Angle {
+    fn change_direction(&mut self) {
         if let Some(attraction_target) = self.find_closest_target() {
-            self.position.angle_to(&attraction_target)
+            // Set direction towards closest attraction target within reach
+            self.direction = self.position.angle_to(&attraction_target)
         } else {
-            Angle::from_degrees(random_range(0, 10) as f32 - 5.0)
+            // Change direction randomly +/- 5 degrees
+            self.direction += Angle::from_degrees(random_range(0, 10) as f32 - 5.0).normalize()
         }
     }
 
@@ -68,17 +72,24 @@ impl Firefly {
         state
             .players
             .iter()
-            .filter(|player| player.color.is_some())
-            .filter(|player| self.color == player.color.unwrap())
+            .filter(|player| Some(self.color) == player.color)
             .map(|player| {
                 (
                     player.attraction_target,
-                    math::floor(self.position.distance(&player.attraction_target)) as i32,
+                    self.distance_to(player.attraction_target),
                 )
             })
-            .filter(|(_attraction_target, distance)| distance < &Self::ATTRACTION_DISTANCE)
+            .filter(|(_attraction_target, distance)| self.within_attraction_distance(distance))
             .min_by(|a, b| a.1.cmp(&b.1))
             .map(|(attraction_target, _distance)| attraction_target)
+    }
+
+    fn within_attraction_distance(&self, distance: &i32) -> bool {
+        distance < &Self::ATTRACTION_DISTANCE
+    }
+
+    fn distance_to(&self, point: Point) -> i32 {
+        math::floor(self.position.distance(&point)) as i32
     }
 
     fn spawn_particles(&mut self) {
@@ -113,8 +124,25 @@ impl Firefly {
 
     pub fn draw(&self, camera: &Camera) {
         self.particles.render(camera);
-        let transformed_position = camera.world_to_screen(self.position); 
+        // Debug line from firefly to closest attraction_target
+        self.draw_debug_line_to_attraction_point(camera);
+        let transformed_position = camera.world_to_screen(self.position);
         draw_point(transformed_position, self.color);
+    }
+
+    fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
+        if let Some(attraction_target) = self.find_closest_target() {
+            let from = camera.world_to_screen(self.position);
+            let to = camera.world_to_screen(attraction_target);
+            draw_line(
+                from,
+                to,
+                LineStyle {
+                    color: Color::Black,
+                    width: 1,
+                },
+            );
+        }
     }
 
     fn random_color() -> Color {

@@ -6,7 +6,9 @@ use firefly_rust::{
     Peer, Peers,
 };
 
-use crate::{firefly::*, game_state::*, player::*, rendering::*, utility::*, world::*, tile_array::*};
+use crate::{
+    firefly::*, game_state::*, player::*, rendering::*, tile_array::*, utility::*, world::*,
+};
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
@@ -31,7 +33,6 @@ impl Default for State {
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
-            //player: None,
             players: Vec::new(),
             me: None,
             spritesheet: load_file_buf("spritesheet").unwrap(),
@@ -50,7 +51,6 @@ pub fn get_state() -> &'static mut State {
 impl State {
     pub fn new(player: Peer, peers: Peers) -> Self {
         State {
-            //player: Some(player),
             players: peers.iter().map(|peer| Player::new(peer)).collect(),
             me: Some(player),
             ..State::default()
@@ -88,10 +88,11 @@ impl State {
                     player.update();
                 }
                 if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
-                    self.fireflies.push(Firefly::random());
+                    self.fireflies
+                        .push(Firefly::random(self.world.width, self.world.height));
                 }
                 for firefly in self.fireflies.iter_mut() {
-                    firefly.update();
+                    firefly.update(&self.world);
                 }
             }
             GameState::GameOver => {
@@ -105,7 +106,9 @@ impl State {
     pub fn draw(&self) {
         clear_screen(Color::White);
 
-        let local_player = self.me.and_then(|me| self.players.iter().find(|p| p.peer == me));
+        let local_player = self
+            .me
+            .and_then(|me| self.players.iter().find(|p| p.peer == me));
         if let Some(player) = local_player {
             self.world.draw(&player.camera);
 
@@ -117,8 +120,6 @@ impl State {
             }
             render_ui();
         }
-
-
     }
 
     pub fn restart(&mut self) {

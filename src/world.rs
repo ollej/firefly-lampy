@@ -1,16 +1,15 @@
-
-use alloc::vec::Vec;
-use firefly_rust::{Point};
+use crate::camera::*;
+use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::drawing::*;
-use crate::constants::{TILE_HEIGHT, TILE_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH};
 use crate::tile::Tile;
 use crate::utility::*;
-use crate::camera::*;
+use alloc::vec::Vec;
+use firefly_rust::Point;
 
 pub struct World {
     tiles: Vec<Tile>,
-    width: i32,
-    height: i32,
+    pub width: i32,
+    pub height: i32,
 }
 
 impl World {
@@ -21,12 +20,10 @@ impl World {
         for y in 0..height {
             for x in 0..width {
                 if y == 0 || y == height || x == 0 || x == width {
-                    tiles.push(Tile::new(x,y,0))
+                    tiles.push(Tile::new(x, y, 0))
                 } else {
-                    tiles.push(Tile::new(x,y,1)) 
+                    tiles.push(Tile::new(x, y, 1))
                 }
-
-                
             }
         }
 
@@ -39,9 +36,9 @@ impl World {
 
     pub fn new_from_2d_array(data: &[&[i32]]) -> Self {
         let height = data.len() as i32;
-        let width = data.first().map_or(0, |row|row.len() as i32);
+        let width = data.first().map_or(0, |row| row.len() as i32);
 
-        let mut tiles = Vec::with_capacity((width*height) as usize);
+        let mut tiles = Vec::with_capacity((width * height) as usize);
 
         for (y, row) in data.iter().enumerate() {
             for (x, &sprite_index) in row.iter().enumerate() {
@@ -56,15 +53,15 @@ impl World {
         }
     }
 
-
-    pub fn draw_all_without_camera(&self) { // For testing / debug
+    pub fn draw_all_without_camera(&self) {
+        // For testing / debug
         for tile in self.tiles.iter() {
             draw_tile(tile.sprite_index, tile.position);
         }
     }
 
     fn get_tile(&self, x: i32, y: i32) -> Option<&Tile> {
-        let index = self.convert_pos_to_index(x,y)?;
+        let index = self.convert_pos_to_index(x, y)?;
         self.tiles.get(index)
     }
 
@@ -76,9 +73,12 @@ impl World {
         }
     }
 
-    pub fn draw(&self, camera : &Camera) {
-        let screen_start = camera.screen_to_world(Point {x: 0, y: 0});
-        let screen_end = camera.screen_to_world(Point{x: SCREEN_WIDTH, y:SCREEN_HEIGHT});
+    pub fn draw(&self, camera: &Camera) {
+        let screen_start = camera.screen_to_world(Point { x: 0, y: 0 });
+        let screen_end = camera.screen_to_world(Point {
+            x: SCREEN_WIDTH,
+            y: SCREEN_HEIGHT,
+        });
 
         let start_x = (screen_start.x / TILE_WIDTH).max(0);
         let start_y = (screen_start.y / TILE_HEIGHT).max(0);
@@ -88,14 +88,11 @@ impl World {
         // Culling out-of-bounds tiles
         for y in start_y..end_y {
             for x in start_x..end_x {
-                if let Some(tile) = self.get_tile(x,y) {
+                if let Some(tile) = self.get_tile(x, y) {
                     let screen_pos = camera.world_to_screen(tile.position);
                     draw_tile(tile.sprite_index, screen_pos);
                 }
             }
         }
-
     }
-
-
 }
