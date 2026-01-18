@@ -143,11 +143,11 @@ impl Player {
                 x: transformed_position.x - 2,
                 y: transformed_position.y - 2,
             },
-            5,
+            6,
             Style {
-                fill_color: Color::Black,
-                stroke_color: Color::Black,
-                stroke_width: 0,
+                fill_color: self.color.unwrap_or(Palette::Black).into(),
+                stroke_color: Palette::Black.into(),
+                stroke_width: 1,
             },
         );
     }
