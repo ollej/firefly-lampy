@@ -50,7 +50,7 @@ impl Firefly {
 
     pub fn update(&mut self, world: &World) {
         self.update_movement(world);
-        //self.spawn_particles();
+        self.spawn_particles();
     }
 
     fn update_movement(&mut self, world: &World) {
@@ -143,27 +143,22 @@ impl Firefly {
 
     fn spawn_particles(&mut self) {
         // Spawn firefly flash
-        let color = if random_range(1, 2) == 1 {
-            Color::Yellow
-        } else {
-            Color::Orange
-        };
         self.particles.spawn_radial_burst(
             self.position.x,
             self.position.y,
             random_range(10, 15) as u8,
             random_range(1, 2) as i16,
             2,
-            color,
+            self.color,
         );
         // Spawn trail
         if random_range(0, 60) < 20 {
             self.particles.spawn(
                 self.position.x,
                 self.position.y,
-                20,
-                20,
-                60,
+                0,
+                0,
+                160,
                 Color::LightGray,
                 1,
             );
