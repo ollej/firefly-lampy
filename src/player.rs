@@ -145,7 +145,7 @@ impl Player {
             },
             6,
             Style {
-                fill_color: self.color.unwrap_or(Palette::Black).into(),
+                fill_color: self.color.unwrap_or(Palette::Yellow).into(),
                 stroke_color: Palette::Black.into(),
                 stroke_width: 1,
             },
