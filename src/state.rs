@@ -1,14 +1,14 @@
-use alloc::format;
 use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
 use firefly_rust::{
-    audio, clear_screen, load_file_buf, log_debug, read_buttons, Buttons, Color, FileBuf, Peer,
+    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
     Peers,
 };
 
 use crate::{
-    firefly::*, game_state::*, player::*, rendering::*, tile_array::*, utility::*, world::*,
+    constants::*, firefly::*, game_state::*, player::*, rendering::*, tile_array::*, utility::*,
+    world::*,
 };
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
@@ -120,6 +120,7 @@ impl State {
                     .iter()
                     .find(|player| player.points >= Self::WIN_POINTS)
                 {
+                    add_progress(winner.peer, BADGE_WINS, 1);
                     self.game_state = GameState::GameOver(Some(winner.peer) == self.me);
                 }
             }
