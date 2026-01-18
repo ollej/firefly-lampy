@@ -50,7 +50,7 @@ pub fn get_state() -> &'static mut State {
 }
 
 impl State {
-    const WIN_POINTS: i32 = 10;
+    const WIN_POINTS: i32 = 1;
 
     pub fn new(player: Peer, peers: Peers) -> Self {
         State {
@@ -148,7 +148,9 @@ impl State {
     }
 
     pub fn restart(&mut self) {
-        todo!()
+        self.fireflies = vec![];
+        self.players.iter_mut().for_each(|player| player.points = 0);
+        self.game_state = GameState::Playing;
     }
 
     pub fn local_player(&self) -> Option<&Player> {
