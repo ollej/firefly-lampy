@@ -22,8 +22,8 @@ pub fn set_colors() {
     set_color(Color::from(10), RGB::new(0x2f, 0x21, 0x3b));
     set_color(Color::from(11), RGB::new(0x43, 0x3a, 0x60));
     set_color(Color::from(12), RGB::new(0x4f, 0x52, 0x77));
-    set_color(Color::from(13), RGB::new(0x65, 0x73, 0x8c));
-    set_color(Color::from(14), RGB::new(0x7c, 0x94, 0xa1));
-    set_color(Color::from(15), RGB::new(0xa0, 0xb9, 0xba));
-    set_color(Color::from(16), RGB::new(0xc0, 0xd1, 0xcc));
+    set_color(Color::from(13), RGB::new(0xde, 0x5d, 0x49));
+    set_color(Color::from(14), RGB::new(0xe5, 0x33, 0xe8));
+    set_color(Color::from(15), RGB::new(0x70, 0xeb, 0x44));
+    set_color(Color::from(16), RGB::new(0x43, 0xb1, 0xe8));
 }
