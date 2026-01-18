@@ -4,7 +4,7 @@ use crate::drawing::*;
 use crate::tile::Tile;
 use crate::utility::random_range;
 use alloc::vec::Vec;
-use firefly_rust::{log_debug, Point};
+use firefly_rust::{Point, log_debug};
 
 pub struct World {
     tiles: Vec<Tile>,

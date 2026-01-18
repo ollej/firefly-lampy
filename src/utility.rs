@@ -1,4 +1,4 @@
-use firefly_rust::{get_random, set_color, Color, RGB};
+use firefly_rust::{Color, RGB, get_random, set_color};
 
 pub fn random_range(min: u32, max: u32) -> u32 {
     if min >= max {
