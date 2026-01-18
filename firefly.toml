@@ -11,3 +11,23 @@ font = { path = "assets/eg_4x6.fff" }
 [badges]
 1 = { name = "wins", steps = 10, descr = "Win 10 times" }
 2 = { name = "deaths", steps = 10, descr = "Die 10 times" }
+
+# https://lospec.com/palette-list/steam-lords
+[palettes.steam-lords]
+1 = 0x213b25
+2 = 0x3a604a
+3 = 0x4f7754
+4 = 0xa19f7c
+5 = 0x77744f
+6 = 0x775c4f
+7 = 0x603b3a
+8 = 0x3b2137
+9 = 0x170e19
+10 = 0x2f213b
+11 = 0x433a60
+12 = 0x4f5277
+13 = 0x65738c
+14 = 0x7c94a1
+15 = 0xa0b9ba
+16 = 0xc0d1cc
+
