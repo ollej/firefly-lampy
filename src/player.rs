@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
+    Point, Style,
 };
 
 use crate::{
@@ -80,8 +80,8 @@ impl Player {
             self.remainder = remainder;
             if !world.is_blocked(new_position) {
                 self.position = Point {
-                    x: new_position.x.clamp(0, world.pixel_width),
-                    y: new_position.y.clamp(0, world.pixel_height),
+                    x: new_position.x.clamp(0, world.pixel_width - 1),
+                    y: new_position.y.clamp(0, world.pixel_height - 1),
                 }
             };
             self.attraction_target =

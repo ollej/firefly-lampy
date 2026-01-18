@@ -1,4 +1,4 @@
-use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, math};
+use firefly_rust::{draw_line, draw_point, math, Angle, Color, LineStyle, Point};
 
 use crate::{camera::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
@@ -11,7 +11,7 @@ pub struct Firefly {
 }
 
 impl Firefly {
-    pub const MAX_COUNT: i32 = 20;
+    pub const MAX_COUNT: i32 = 100;
     const ATTRACTION_DISTANCE: i32 = 20;
     const SPEED: f32 = 1.0;
     const COLORS: [Color; 4] = [
@@ -55,21 +55,33 @@ impl Firefly {
             .position
             .point_from_distance_and_angle(Self::SPEED + self.remainder, self.direction);
         self.remainder = remainder;
-        self.position = Point {
-            x: new_position.x.clamp(0, world.pixel_width),
-            y: new_position.y.clamp(0, world.pixel_height),
-        };
-
         self.change_direction_on_wall_hit(new_position, world);
+
+        if !world.is_blocked(new_position) {
+            self.position = Point {
+                x: new_position.x.clamp(0, world.pixel_width - 1),
+                y: new_position.y.clamp(0, world.pixel_height - 1),
+            };
+        }
     }
 
     fn change_direction_on_wall_hit(&mut self, new_position: Point, world: &World) {
         // Change direction when hitting walls
-        if new_position.x < 0 || new_position.x > world.pixel_width {
+        let posx = Point {
+            x: new_position.x,
+            y: self.position.y,
+        };
+        if world.is_blocked(posx) || new_position.x < 0 || new_position.x > (world.pixel_width - 1)
+        {
             let new_direction = Angle::HALF_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }
-        if new_position.y < 0 || new_position.y > world.pixel_height {
+        let posy = Point {
+            x: self.position.x,
+            y: new_position.y,
+        };
+        if world.is_blocked(posy) || new_position.y < 0 || new_position.y > (world.pixel_height - 1)
+        {
             let new_direction = Angle::FULL_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }
