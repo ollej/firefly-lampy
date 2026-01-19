@@ -9,6 +9,7 @@ mod audio;
 mod camera;
 mod constants;
 mod drawing;
+mod fireflies;
 mod firefly;
 mod game_state;
 mod palette;

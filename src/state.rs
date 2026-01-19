@@ -7,15 +7,15 @@ use firefly_rust::{
 };
 
 use crate::{
-    audio::*, constants::*, firefly::*, game_state::*, player::*, rendering::*, tile_array::*,
-    utility::*, world::*,
+    audio::*, constants::*, fireflies::*, firefly::*, game_state::*, player::*, rendering::*,
+    tile_array::*, utility::*, world::*,
 };
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
     buttons: Buttons,
     pub debug: bool,
-    fireflies: Vec<Firefly>,
+    fireflies: Fireflies,
     pub font: FileBuf,
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
@@ -32,7 +32,7 @@ impl Default for State {
         State {
             buttons: Buttons::default(),
             debug: false,
-            fireflies: vec![],
+            fireflies: Fireflies::new(),
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
@@ -92,13 +92,8 @@ impl State {
                 for player in self.players.iter_mut() {
                     player.update(&self.world);
                 }
-                if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
-                    self.fireflies.push(Firefly::random(&self.world));
-                }
-                for firefly in self.fireflies.iter_mut() {
-                    firefly.update(&self.world);
-                }
-                self.collect_fireflies();
+                let removed_fireflies = self.fireflies.update(&self.world);
+                self.collect_fireflies(removed_fireflies);
 
                 // Check win condition
                 if let Some(winner) = self
@@ -127,15 +122,13 @@ impl State {
             for player in self.players.iter() {
                 player.draw();
             }
-            for firefly in self.fireflies.iter() {
-                firefly.draw(&player.camera);
-            }
+            self.fireflies.draw(&player.camera);
             render_ui();
         }
     }
 
     pub fn restart(&mut self) {
-        self.fireflies = vec![];
+        self.fireflies = Fireflies::new();
         self.players.iter_mut().for_each(|player| player.points = 0);
         self.game_state = GameState::Playing;
     }
@@ -145,22 +138,10 @@ impl State {
             .and_then(|me| self.players.iter().find(|p| p.peer == me))
     }
 
-    fn collect_fireflies(&mut self) {
-        let removed_fireflies = self.remove_fireflies();
-        removed_fireflies
+    fn collect_fireflies(&mut self, fireflies: Vec<Firefly>) {
+        fireflies
             .iter()
             .for_each(|firefly| self.handle_collected_firefly(firefly));
-    }
-
-    fn remove_fireflies(&mut self) -> Vec<Firefly> {
-        let world = &self.world;
-        self.fireflies
-            .extract_if(.., |firefly| Self::should_collect_firefly(firefly, world))
-            .collect()
-    }
-
-    fn should_collect_firefly(firefly: &Firefly, world: &World) -> bool {
-        firefly.attracted_to.is_some() && firefly.is_in_goal(world)
     }
 
     fn handle_collected_firefly(&mut self, firefly: &Firefly) {
