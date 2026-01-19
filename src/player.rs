@@ -102,10 +102,10 @@ impl Player {
                     self.position = Point {
                         x: new_position.x.clamp(0, world.pixel_width - 1),
                         y: new_position.y.clamp(0, world.pixel_height - 1),
-                    }
+                    };
+                    self.attraction_target =
+                        Self::calculate_attraction_target(self.position, self.direction);
                 };
-                self.attraction_target =
-                    Self::calculate_attraction_target(self.position, self.direction);
             } else {
                 self.remainder = 0.0;
             }
