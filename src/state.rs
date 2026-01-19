@@ -89,12 +89,7 @@ impl State {
                 }
             }
             GameState::Playing => {
-                for player in self.players.iter_mut() {
-                    player.update(&self.world);
-                }
-                let removed_fireflies = self.fireflies.update(&self.world);
-                self.collect_fireflies(removed_fireflies);
-                self.check_win_condition();
+                self.update_playing();
             }
             GameState::GameOver(_won) => {
                 if just_pressed.e {
@@ -127,6 +122,15 @@ impl State {
     pub fn local_player(&self) -> Option<&Player> {
         self.me
             .and_then(|me| self.players.iter().find(|p| p.peer == me))
+    }
+
+    fn update_playing(&mut self) {
+        for player in self.players.iter_mut() {
+            player.update(&self.world);
+        }
+        let removed_fireflies = self.fireflies.update(&self.world);
+        self.collect_fireflies(removed_fireflies);
+        self.check_win_condition();
     }
 
     fn check_win_condition(&mut self) {
