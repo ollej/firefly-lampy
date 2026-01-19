@@ -14,6 +14,13 @@ flashlights.
 - Trap fireflies in the flashlight matching their color and bring them to the collection point in the center of the play area.
 - First player to collect 10 fireflies wins.
 
+## Installation
+
+To play the game you need the Firefly Zero emulator (or the hardware once it's
+released). Instructions on how to [install the Firefly Zero
+emulator](https://docs.fireflyzero.com/user/installation/).
+
+
 ## License
 
 Released under the MIT License.
