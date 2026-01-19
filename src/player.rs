@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
+    Point, Style,
 };
 
 use crate::{
@@ -79,7 +79,7 @@ impl Player {
                 .as_str(),
             );
             */
-            if self.speed > 0.0 {
+            if self.speed > 100.0 {
                 let (new_position, remainder) = self.position.point_from_distance_and_angle(
                     self.speed * Self::SPEED + self.remainder,
                     self.direction,
@@ -89,7 +89,13 @@ impl Player {
                     || new_position.y <= 0
                     || new_position.y >= world.pixel_height
                 {
-                    log_debug(format!("new position outside world: {:?}", new_position).as_str());
+                    log_debug(
+                        format!(
+                            "new position outside world: {:?} speed: {} remainder: {} distance: {} direction: {:?}",
+                            new_position, self.speed, self.remainder, self.speed * Self::SPEED + self.remainder, self.direction
+                        )
+                        .as_str(),
+                    );
                 }
                 self.remainder = remainder;
                 if !world.is_blocked(new_position) {
@@ -100,6 +106,8 @@ impl Player {
                 };
                 self.attraction_target =
                     Self::calculate_attraction_target(self.position, self.direction);
+            } else {
+                self.remainder = 0.0;
             }
 
             //self.camera.set_camera_position(self.position);

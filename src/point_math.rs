@@ -1,4 +1,5 @@
-use firefly_rust::{Angle, Point, math};
+use alloc::format;
+use firefly_rust::{log_debug, math, Angle, Point};
 
 pub trait PointMath {
     fn angle_to(&self, other: &Point) -> Angle;
@@ -27,7 +28,11 @@ impl PointMath for Point {
             y: math::floor(yy) as i32,
         };
 
-        let remainder = distance - self.distance(&new_point);
+        let remainder = if self == &new_point {
+            distance
+        } else {
+            (distance - self.distance(&new_point)).max(0.0)
+        };
 
         (new_point, remainder)
     }
