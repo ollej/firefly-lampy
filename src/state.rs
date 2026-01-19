@@ -20,6 +20,7 @@ pub struct State {
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
     me: Option<Peer>,
+    particles: ParticleSystem,
     pub players: Vec<Player>,
     pub spritesheet: FileBuf,
     theme: audio::Node<audio::Gain>,
@@ -37,6 +38,7 @@ impl Default for State {
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
             me: None,
+            particles: ParticleSystem::new(100),
             players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
@@ -109,6 +111,7 @@ impl State {
                 player.draw();
             }
             self.fireflies.draw(&player.camera);
+            self.particles.render(&player.camera);
             render_ui();
         }
     }
@@ -131,6 +134,7 @@ impl State {
         let removed_fireflies = self.fireflies.update(&self.world);
         self.collect_fireflies(removed_fireflies);
         self.check_win_condition();
+        self.particles.update();
     }
 
     fn check_win_condition(&mut self) {
@@ -156,9 +160,21 @@ impl State {
                 if player.attraction_target == attracted_to {
                     player.points += 1;
                     get_audio_player().play_sfx("pling");
+                    self.spawn_collection_burst(firefly);
                     return;
                 }
             }
         }
+    }
+
+    pub fn spawn_collection_burst(&mut self, firefly: &Firefly) {
+        self.particles.spawn_radial_burst(
+            firefly.position.x,
+            firefly.position.y,
+            random_range(30, 40) as u8,
+            random_range(1, 3) as i16,
+            8,
+            firefly.color.into(),
+        );
     }
 }

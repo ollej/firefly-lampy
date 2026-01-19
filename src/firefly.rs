@@ -206,15 +206,4 @@ impl Firefly {
             self.color.into(),
         );
     }
-
-    pub fn spawn_collection_burst(&mut self) {
-        self.particles.spawn_radial_burst(
-            self.position.x,
-            self.position.y,
-            random_range(20, 30) as u8,
-            random_range(4, 6) as i16,
-            6,
-            self.color.into(),
-        );
-    }
 }
