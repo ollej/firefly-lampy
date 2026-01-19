@@ -1,4 +1,4 @@
-use firefly_rust::{Angle, Color, LineStyle, Point, draw_line, draw_point, log_debug, math};
+use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
 
 use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
@@ -179,7 +179,7 @@ impl Firefly {
             self.draw_debug_line_to_attraction_point(camera);
         }
         let transformed_position = camera.world_to_screen(self.position);
-        draw_point(transformed_position, self.color.into());
+        draw_point(transformed_position, Palette::Black.into());
     }
 
     fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
