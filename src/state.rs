@@ -2,8 +2,8 @@ use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, add_progress, audio, clear_screen, load_file_buf,
-    read_buttons,
+    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
+    Peers, Point,
 };
 
 use crate::{
@@ -98,24 +98,7 @@ impl State {
                 for firefly in self.fireflies.iter_mut() {
                     firefly.update(&self.world);
                 }
-                self.fireflies.retain(|firefly| {
-                    if !firefly.is_in_goal(&self.world) {
-                        return true;
-                    }
-
-                    // Score point for fireflies turned in at goal
-                    if let Some(scoring_player) = self
-                        .players
-                        .iter_mut()
-                        .find(|player| Some(player.attraction_target) == firefly.attracted_to)
-                    {
-                        scoring_player.points += 1;
-                        get_audio_player().play_sfx("pling");
-                        return false;
-                    }
-
-                    true
-                });
+                self.collect_fireflies();
 
                 // Check win condition
                 if let Some(winner) = self
@@ -160,5 +143,35 @@ impl State {
     pub fn local_player(&self) -> Option<&Player> {
         self.me
             .and_then(|me| self.players.iter().find(|p| p.peer == me))
+    }
+
+    fn collect_fireflies(&mut self) {
+        let removed_fireflies = self.remove_fireflies();
+        removed_fireflies
+            .iter()
+            .for_each(|firefly| self.handle_collected_firefly(firefly));
+    }
+
+    fn remove_fireflies(&mut self) -> Vec<Firefly> {
+        let world = &self.world;
+        self.fireflies
+            .extract_if(.., |firefly| Self::should_collect_firefly(firefly, world))
+            .collect()
+    }
+
+    fn should_collect_firefly(firefly: &Firefly, world: &World) -> bool {
+        firefly.attracted_to.is_some() && firefly.is_in_goal(world)
+    }
+
+    fn handle_collected_firefly(&mut self, firefly: &Firefly) {
+        if let Some(attracted_to) = firefly.attracted_to {
+            for player in self.players.iter_mut() {
+                if player.attraction_target == attracted_to {
+                    player.points += 1;
+                    get_audio_player().play_sfx("pling");
+                    return;
+                }
+            }
+        }
     }
 }
