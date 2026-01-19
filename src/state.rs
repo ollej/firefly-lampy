@@ -7,8 +7,8 @@ use firefly_rust::{
 };
 
 use crate::{
-    audio::*, constants::*, fireflies::*, firefly::*, game_state::*, player::*, rendering::*,
-    tile_array::*, utility::*, world::*,
+    audio::*, constants::*, fireflies::*, firefly::*, game_state::*, particles::*, player::*,
+    rendering::*, tile_array::*, utility::*, world::*,
 };
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
@@ -19,8 +19,8 @@ pub struct State {
     pub font: FileBuf,
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
-    pub players: Vec<Player>,
     me: Option<Peer>,
+    pub players: Vec<Player>,
     pub spritesheet: FileBuf,
     theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
@@ -36,8 +36,8 @@ impl Default for State {
             font: load_file_buf("font").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
-            players: Vec::new(),
             me: None,
+            players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
@@ -94,16 +94,7 @@ impl State {
                 }
                 let removed_fireflies = self.fireflies.update(&self.world);
                 self.collect_fireflies(removed_fireflies);
-
-                // Check win condition
-                if let Some(winner) = self
-                    .players
-                    .iter()
-                    .find(|player| player.points >= Self::WIN_POINTS)
-                {
-                    add_progress(winner.peer, BADGE_WINS, 1);
-                    self.game_state = GameState::GameOver(Some(winner.peer) == self.me);
-                }
+                self.check_win_condition();
             }
             GameState::GameOver(_won) => {
                 if just_pressed.e {
@@ -136,6 +127,17 @@ impl State {
     pub fn local_player(&self) -> Option<&Player> {
         self.me
             .and_then(|me| self.players.iter().find(|p| p.peer == me))
+    }
+
+    fn check_win_condition(&mut self) {
+        if let Some(winner) = self
+            .players
+            .iter()
+            .find(|player| player.points >= Self::WIN_POINTS)
+        {
+            add_progress(winner.peer, BADGE_WINS, 1);
+            self.game_state = GameState::GameOver(Some(winner.peer) == self.me);
+        }
     }
 
     fn collect_fireflies(&mut self, fireflies: Vec<Firefly>) {

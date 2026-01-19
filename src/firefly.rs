@@ -4,10 +4,10 @@ use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utilit
 
 pub struct Firefly {
     pub attracted_to: Option<Point>,
-    color: Palette,
+    pub color: Palette,
     direction: Angle,
     particles: ParticleSystem,
-    position: Point,
+    pub position: Point,
     remainder: f32,
 }
 
@@ -38,7 +38,7 @@ impl Firefly {
             attracted_to: None,
             color: Self::random_color(),
             direction: Self::random_direction(),
-            particles: ParticleSystem::new(20),
+            particles: ParticleSystem::new(100),
             position: world.random_unblocked_point(),
             remainder: 0.0,
         }
@@ -51,6 +51,17 @@ impl Firefly {
     pub fn update(&mut self, world: &World) {
         self.update_movement(world);
         self.spawn_particles();
+    }
+
+    pub fn draw(&self, camera: &Camera) {
+        self.particles.render(camera);
+        // Debug line from firefly to closest attraction_target
+        let state = get_state();
+        if state.debug {
+            self.draw_debug_line_to_attraction_point(camera);
+        }
+        let transformed_position = camera.world_to_screen(self.position);
+        draw_point(transformed_position, Palette::Black.into());
     }
 
     pub fn is_in_goal(&self, world: &World) -> bool {
@@ -145,43 +156,6 @@ impl Firefly {
         math::floor(self.position.distance(&point)) as i32
     }
 
-    fn spawn_particles(&mut self) {
-        // Spawn trail
-        if random_range(0, 60) < 20 {
-            self.particles.spawn(
-                self.position.x,
-                self.position.y,
-                0,
-                0,
-                30,
-                self.color.into(),
-                1,
-            );
-        }
-
-        // Spawn firefly flash
-        self.particles.spawn_radial_burst(
-            self.position.x,
-            self.position.y,
-            random_range(10, 15) as u8,
-            random_range(1, 2) as i16,
-            2,
-            self.color.into(),
-        );
-        self.particles.update();
-    }
-
-    pub fn draw(&self, camera: &Camera) {
-        self.particles.render(camera);
-        // Debug line from firefly to closest attraction_target
-        let state = get_state();
-        if state.debug {
-            self.draw_debug_line_to_attraction_point(camera);
-        }
-        let transformed_position = camera.world_to_screen(self.position);
-        draw_point(transformed_position, Palette::Black.into());
-    }
-
     fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
         if let Some(attraction_target) = self.attracted_to {
             let from = camera.world_to_screen(self.position);
@@ -200,5 +174,47 @@ impl Firefly {
     fn random_color() -> Palette {
         let idx = random_range(0, 3) as usize;
         *Self::COLORS.get(idx).unwrap_or(&Palette::Purple)
+    }
+
+    fn spawn_particles(&mut self) {
+        self.spawn_trail_particles();
+        self.spawn_firefly_flash_particles();
+        self.particles.update();
+    }
+
+    fn spawn_trail_particles(&mut self) {
+        if random_range(0, 60) < 20 {
+            self.particles.spawn(
+                self.position.x,
+                self.position.y,
+                0,
+                0,
+                30,
+                self.color.into(),
+                1,
+            );
+        }
+    }
+
+    fn spawn_firefly_flash_particles(&mut self) {
+        self.particles.spawn_radial_burst(
+            self.position.x,
+            self.position.y,
+            random_range(10, 15) as u8,
+            random_range(1, 2) as i16,
+            2,
+            self.color.into(),
+        );
+    }
+
+    pub fn spawn_collection_burst(&mut self) {
+        self.particles.spawn_radial_burst(
+            self.position.x,
+            self.position.y,
+            random_range(20, 30) as u8,
+            random_range(4, 6) as i16,
+            6,
+            self.color.into(),
+        );
     }
 }
