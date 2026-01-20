@@ -9,19 +9,14 @@ pub enum FireflyColor {
 }
 
 impl FireflyColor {
-    pub const fn new(v: u8) -> Self {
-        match v {
-            0 => FireflyColor::SoftRed,
-            1 => FireflyColor::BrightMagenta,
-            2 => FireflyColor::BrightGreen,
-            3 => FireflyColor::BrightBlue,
+    pub fn random() -> Self {
+        match random_range(0, 36) {
+            0..20 => FireflyColor::SoftRed,
+            20..30 => FireflyColor::BrightMagenta,
+            30..35 => FireflyColor::BrightGreen,
+            35..=36 => FireflyColor::BrightBlue,
             _ => FireflyColor::None,
         }
-    }
-
-    pub fn random() -> Self {
-        let idx = random_range(0, 3) as u8;
-        FireflyColor::new(idx)
     }
 
     pub fn color(&self) -> Palette {
