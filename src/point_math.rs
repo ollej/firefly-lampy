@@ -1,9 +1,12 @@
-use firefly_rust::{Angle, Point, math};
+use firefly_rust::{math, Angle, Point};
+
+use crate::utility::random_range;
 
 pub trait PointMath {
     fn angle_to(&self, other: &Point) -> Angle;
     fn distance(&self, other: &Point) -> f32;
     fn point_from_distance_and_angle(&self, distance: f32, angle: Angle) -> (Point, f32);
+    fn scatter(&self, modifier: u32) -> Point;
 }
 
 impl PointMath for Point {
@@ -34,6 +37,13 @@ impl PointMath for Point {
         };
 
         (new_point, remainder)
+    }
+
+    fn scatter(&self, modifier: u32) -> Point {
+        Point {
+            x: self.x + (random_range(0, modifier) - modifier / 2) as i32,
+            y: self.y + (random_range(0, modifier) - modifier / 2) as i32,
+        }
     }
 }
 

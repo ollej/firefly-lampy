@@ -7,6 +7,7 @@ app_name = "Lampy"
 _splash = { path = "assets/title.png" }
 spritesheet = { path = "assets/spritesheet.png", palette="steam-lords" }
 font = { path = "assets/kenney_16x16.fff" }
+font_points = { path = "assets/pico8_4x6.fff" }
 music_loop = { path = "assets/loop.wav" }
 pling = { path = "assets/score.wav" }
 

@@ -10,8 +10,8 @@ use firefly_rust::{
 
 use crate::{
     audio::*, camera::Camera, constants::*, fireflies::Fireflies, firefly::Firefly,
-    game_state::GameState, particles::ParticleSystem, player::Player, rendering::*, text::Text,
-    tile_array::TILE_ARRAY, utility::random_range, world::World,
+    game_state::GameState, particles::ParticleSystem, player::Player, point_math::PointMath,
+    rendering::*, text::Text, tile_array::TILE_ARRAY, utility::random_range, world::World,
 };
 
 pub static mut STATE: OnceCell<State> = OnceCell::new();
@@ -22,6 +22,7 @@ pub struct State {
     pub debug: bool,
     fireflies: Fireflies,
     pub font: FileBuf,
+    pub font_points: FileBuf,
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
     pub me: Option<Peer>,
@@ -42,6 +43,7 @@ impl Default for State {
             debug: false,
             fireflies: Fireflies::new(),
             font: load_file_buf("font").unwrap(),
+            font_points: load_file_buf("font_points").unwrap(),
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
             me: None,
@@ -215,7 +217,14 @@ impl State {
 
     pub fn spawn_point_text(&mut self, firefly: &Firefly) {
         let content = format!("+{}", firefly.points());
-        self.texts
-            .push(Text::new(content, firefly.color().into(), firefly.position));
+
+        // Scatter position to show all texts whencollecting
+        // multiple fireflies at the same time.
+
+        self.texts.push(Text::new(
+            content,
+            firefly.color().into(),
+            firefly.position.scatter(12),
+        ));
     }
 }
