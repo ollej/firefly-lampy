@@ -12,7 +12,7 @@ pub struct Firefly {
 }
 
 impl Firefly {
-    pub const MAX_COUNT: i32 = 100;
+    pub const MAX_COUNT: i32 = 20;
     const ATTRACTION_DISTANCE: i32 = 40;
     const SPEED: f32 = 1.0;
     const COLORS: [Palette; 4] = [
