@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
-    Point, Style,
+    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
+    read_pad,
 };
 
 use crate::{
@@ -57,28 +57,15 @@ impl Player {
     }
 
     fn update_position(&mut self, world: &World) {
-        // Read touchpad
         if let Some(pad) = read_pad(self.peer) {
-            self.direction = -pad.azimuth();
-            self.speed = pad.radius();
-            // Handle when azimuth is NaN
-            if self.direction.to_radians().is_nan() {
-                //log_debug("is_nan!");
+            let speed = pad.radius();
+            if speed <= 0.01 {
                 self.direction = Angle::ZERO;
                 self.speed = 0.0;
+            } else {
+                self.direction = -pad.azimuth();
+                self.speed = speed;
             }
-            /*
-            log_debug(
-                format!(
-                    "direction: {} speed: {} remainder: {} position: {:?}",
-                    self.direction.to_degrees(),
-                    self.speed,
-                    self.remainder,
-                    self.position
-                )
-                .as_str(),
-            );
-            */
             if self.speed > 100.0 {
                 let (new_position, remainder) = self.position.point_from_distance_and_angle(
                     self.speed * Self::SPEED + self.remainder,
