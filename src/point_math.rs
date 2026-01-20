@@ -1,5 +1,4 @@
-use alloc::format;
-use firefly_rust::{log_debug, math, Angle, Point};
+use firefly_rust::{Angle, Point, math};
 
 pub trait PointMath {
     fn angle_to(&self, other: &Point) -> Angle;

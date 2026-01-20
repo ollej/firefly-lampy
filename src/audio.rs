@@ -1,5 +1,5 @@
 use core::cell::OnceCell;
-use firefly_rust::audio::{self, File, Gain, Loop, Mix, Node};
+use firefly_rust::audio::{self, Gain, Loop, Mix, Node};
 
 pub static mut AUDIO: OnceCell<AudioPlayer> = OnceCell::new();
 
