@@ -1,5 +1,5 @@
 use core::cell::OnceCell;
-use firefly_rust::audio::{self, File, Gain, Loop, Mix, Node};
+use firefly_rust::audio::{self, Gain, Loop, Mix, Node};
 
 pub static mut AUDIO: OnceCell<AudioPlayer> = OnceCell::new();
 
@@ -18,8 +18,9 @@ pub fn get_audio_player() -> &'static mut AudioPlayer {
 
 impl AudioPlayer {
     pub fn new() -> Self {
-        let music_loop = audio::OUT.add_loop();
-        let music_gain = music_loop.add_gain(0.5);
+
+        let music_gain = audio::OUT.add_gain(0.5);
+        let music_loop = music_gain.add_loop();
 
         let sfx_mix = audio::OUT.add_mix();
         let sfx_nodes = [
@@ -44,7 +45,7 @@ impl AudioPlayer {
     }
 
     pub fn play_music(&mut self, file_name: &str) {
-        self.music_gain.clear();
-        self.music_gain.add_file(file_name);
+        self.music_loop.clear();
+        self.music_loop.add_file(file_name);
     }
 }

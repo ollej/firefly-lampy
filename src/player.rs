@@ -1,6 +1,6 @@
 use alloc::format;
 use firefly_rust::{
-    Angle, Buttons, Color, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
+    Angle, Buttons, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
     read_pad,
 };
 
