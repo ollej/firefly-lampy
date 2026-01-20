@@ -1,8 +1,9 @@
 use firefly_rust::{draw_line, draw_point, math, Angle, LineStyle, Point};
 
 use crate::{
-    camera::*, firefly_color::*, palette::*, particles::*, player::*, point_math::*, state::*,
-    utility::*, world::*,
+    camera::Camera, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, firefly_color::FireflyColor,
+    palette::Palette, particles::ParticleSystem, player::Player, point_math::PointMath,
+    state::get_state, utility::random_range, world::World,
 };
 
 pub struct Firefly {
@@ -26,12 +27,13 @@ impl Firefly {
     ];
 
     pub fn new_random(world: &World) -> Self {
+        let color = FireflyColor::random();
         Firefly {
             attracted_to: None,
-            color: FireflyColor::random(),
+            color,
             direction: Self::random_direction(),
             particles: ParticleSystem::new(100),
-            position: world.random_unblocked_point(),
+            position: world.random_unblocked_point_in_rectangle(color.starting_rect()),
             remainder: 0.0,
         }
     }
@@ -90,8 +92,8 @@ impl Firefly {
 
         if !world.is_blocked(new_position) {
             self.position = Point {
-                x: new_position.x.clamp(0, world.pixel_width - 1),
-                y: new_position.y.clamp(0, world.pixel_height - 1),
+                x: new_position.x.clamp(0, WORLD_WIDTH - 1),
+                y: new_position.y.clamp(0, WORLD_HEIGHT - 1),
             };
         }
     }
@@ -102,8 +104,7 @@ impl Firefly {
             x: new_position.x,
             y: self.position.y,
         };
-        if world.is_blocked(posx) || new_position.x < 0 || new_position.x > (world.pixel_width - 1)
-        {
+        if world.is_blocked(posx) || new_position.x < 0 || new_position.x > (WORLD_WIDTH - 1) {
             let new_direction = Angle::HALF_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }
@@ -111,8 +112,7 @@ impl Firefly {
             x: self.position.x,
             y: new_position.y,
         };
-        if world.is_blocked(posy) || new_position.y < 0 || new_position.y > (world.pixel_height - 1)
-        {
+        if world.is_blocked(posy) || new_position.y < 0 || new_position.y > (WORLD_HEIGHT - 1) {
             let new_direction = Angle::FULL_CIRCLE - self.direction;
             self.direction = new_direction.normalize();
         }

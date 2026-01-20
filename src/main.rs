@@ -17,6 +17,7 @@ mod palette;
 mod particles;
 mod player;
 mod point_math;
+mod rectangle;
 mod rendering;
 mod state;
 mod tile;

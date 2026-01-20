@@ -96,24 +96,12 @@ impl Player {
                 let (new_position, remainder) = self
                     .position
                     .point_from_distance_and_angle(distance, self.direction);
-                if new_position.x <= 0
-                    || new_position.x >= world.pixel_width
-                    || new_position.y <= 0
-                    || new_position.y >= world.pixel_height
-                {
-                    log_debug(
-                        format!(
-                            "new position outside world: {:?} speed: {} remainder: {} distance: {} direction: {:?}",
-                            new_position, self.speed, self.remainder, self.speed * Self::SPEED + self.remainder, self.direction
-                        )
-                        .as_str(),
-                    );
-                }
+                self.debug_teleport(new_position);
                 self.remainder = remainder;
                 if !world.is_blocked(new_position) {
                     self.position = Point {
-                        x: new_position.x.clamp(0, world.pixel_width - 1),
-                        y: new_position.y.clamp(0, world.pixel_height - 1),
+                        x: new_position.x.clamp(0, WORLD_WIDTH - 1),
+                        y: new_position.y.clamp(0, WORLD_HEIGHT - 1),
                     };
                     self.attraction_target =
                         Self::calculate_attraction_target(self.position, self.direction);
@@ -184,6 +172,22 @@ impl Player {
                     stroke_color: color.into(),
                     stroke_width: 0,
                 },
+            );
+        }
+    }
+
+    fn debug_teleport(&self, position: Point) {
+        if position.x <= 0
+            || position.x >= WORLD_WIDTH
+            || position.y <= 0
+            || position.y >= WORLD_HEIGHT
+        {
+            log_debug(
+                format!(
+                    "new position outside world: {:?} speed: {} remainder: {} distance: {} direction: {:?}",
+                    position, self.speed, self.remainder, self.speed * Self::SPEED + self.remainder, self.direction
+                )
+                .as_str(),
             );
         }
     }

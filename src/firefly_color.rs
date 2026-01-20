@@ -1,5 +1,11 @@
-use crate::{palette::*, utility::random_range};
+use firefly_rust::Point;
 
+use crate::{
+    constants::WORLD_HEIGHT, constants::WORLD_WIDTH, palette::Palette, rectangle::Rectangle,
+    utility::random_range,
+};
+
+#[derive(Clone, Copy, Debug)]
 pub enum FireflyColor {
     SoftRed,
     BrightMagenta,
@@ -36,6 +42,16 @@ impl FireflyColor {
             FireflyColor::BrightGreen => 3,
             FireflyColor::BrightBlue => 5,
             FireflyColor::None => 0,
+        }
+    }
+
+    pub fn starting_rect(&self) -> Rectangle {
+        match self {
+            FireflyColor::SoftRed => Rectangle::new(Point::new(16, 16), 192, 192),
+            FireflyColor::BrightMagenta => Rectangle::new(Point::new(16, 256), 192, 192),
+            FireflyColor::BrightGreen => Rectangle::new(Point::new(256, 16), 192, 192),
+            FireflyColor::BrightBlue => Rectangle::new(Point::new(256, 256), 192, 192),
+            FireflyColor::None => Rectangle::new(Point::new(0, 0), WORLD_WIDTH, WORLD_HEIGHT),
         }
     }
 }

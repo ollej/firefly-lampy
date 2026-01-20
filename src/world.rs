@@ -1,20 +1,31 @@
-use crate::camera::*;
-use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH};
-use crate::drawing::*;
-use crate::tile::Tile;
-use crate::utility::random_range;
 use alloc::vec::Vec;
+
 use firefly_rust::Point;
+
+use crate::{
+    camera::Camera,
+    constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH, WORLD_HEIGHT, WORLD_WIDTH},
+    drawing::draw_tile,
+    rectangle::Rectangle,
+    tile::Tile,
+    utility::random_range,
+};
 
 pub struct World {
     tiles: Vec<Tile>,
     width: i32,
     height: i32,
-    pub pixel_width: i32,
-    pub pixel_height: i32,
 }
 
 impl World {
+    pub fn rect() -> Rectangle {
+        Rectangle {
+            point: Point::new(0, 0),
+            width: WORLD_WIDTH,
+            height: WORLD_HEIGHT,
+        }
+    }
+
     pub fn new_from_2d_array(data: &[&[i32]]) -> Self {
         let height = data.len() as i32;
         let width = data.first().map_or(0, |row| row.len() as i32);
@@ -41,8 +52,6 @@ impl World {
             tiles,
             width,
             height,
-            pixel_width: width * TILE_WIDTH,
-            pixel_height: height * TILE_HEIGHT,
         }
     }
 
@@ -77,13 +86,18 @@ impl World {
     }
 
     pub fn random_unblocked_point(&self) -> Point {
+        self.random_unblocked_point_in_rectangle(Self::rect())
+    }
+
+    pub fn random_unblocked_point_in_rectangle(&self, rect: Rectangle) -> Point {
+        let bottom_right = rect.bottom_right();
         let point = Point {
-            x: random_range(0, (self.pixel_width - 1) as u32) as i32,
-            y: random_range(0, (self.pixel_height - 1) as u32) as i32,
+            x: random_range(rect.x() as u32, bottom_right.x as u32) as i32,
+            y: random_range(rect.y() as u32, bottom_right.y as u32) as i32,
         };
 
         if self.is_blocked(point) {
-            self.random_unblocked_point()
+            self.random_unblocked_point_in_rectangle(rect)
         } else {
             point
         }
