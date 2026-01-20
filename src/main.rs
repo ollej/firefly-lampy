@@ -11,6 +11,7 @@ mod constants;
 mod drawing;
 mod fireflies;
 mod firefly;
+mod firefly_color;
 mod game_state;
 mod palette;
 mod particles;

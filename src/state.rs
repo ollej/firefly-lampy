@@ -39,7 +39,7 @@ impl Default for State {
             fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
             me: None,
-            particles: ParticleSystem::new(100),
+            particles: ParticleSystem::new(200),
             players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
             theme: audio::OUT.add_gain(0.5),
@@ -55,7 +55,7 @@ pub fn get_state() -> &'static mut State {
 }
 
 impl State {
-    const WIN_POINTS: i32 = 10;
+    const WIN_POINTS: i32 = 20;
 
     pub fn new(player: Peer, peers: Peers) -> Self {
         let world = World::new_from_2d_array(TILE_ARRAY);
@@ -170,7 +170,7 @@ impl State {
         if let Some(attracted_to) = firefly.attracted_to {
             for player in self.players.iter_mut() {
                 if player.attraction_target == attracted_to {
-                    player.points += 1;
+                    player.points += firefly.points();
                     get_audio_player().play_sfx("pling");
                     self.spawn_collection_burst(firefly);
                     return;
@@ -184,9 +184,9 @@ impl State {
             firefly.position.x,
             firefly.position.y,
             random_range(30, 40) as u8,
-            random_range(1, 3) as i16,
+            random_range(1, 2) as i16,
             8,
-            firefly.color.into(),
+            firefly.color().into(),
         );
     }
 }

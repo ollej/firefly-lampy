@@ -1,10 +1,13 @@
-use firefly_rust::{Angle, LineStyle, Point, draw_line, draw_point, math};
+use firefly_rust::{draw_line, draw_point, math, Angle, LineStyle, Point};
 
-use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utility::*, world::*};
+use crate::{
+    camera::*, firefly_color::*, palette::*, particles::*, player::*, point_math::*, state::*,
+    utility::*, world::*,
+};
 
 pub struct Firefly {
     pub attracted_to: Option<Point>,
-    pub color: Palette,
+    pub color: FireflyColor,
     direction: Angle,
     particles: ParticleSystem,
     pub position: Point,
@@ -15,17 +18,17 @@ impl Firefly {
     pub const MAX_COUNT: i32 = 100;
     const ATTRACTION_DISTANCE: i32 = 40;
     const SPEED: f32 = 1.0;
-    const COLORS: [Palette; 4] = [
-        Palette::SoftRed,
-        Palette::BrightMagenta,
-        Palette::BrightGreen,
-        Palette::BrightBlue,
+    const COLORS: [FireflyColor; 4] = [
+        FireflyColor::SoftRed,
+        FireflyColor::BrightMagenta,
+        FireflyColor::BrightGreen,
+        FireflyColor::BrightBlue,
     ];
 
     pub fn new_random(world: &World) -> Self {
         Firefly {
             attracted_to: None,
-            color: Self::random_color(),
+            color: FireflyColor::random(),
             direction: Self::random_direction(),
             particles: ParticleSystem::new(100),
             position: world.random_unblocked_point(),
@@ -55,6 +58,18 @@ impl Firefly {
 
     pub fn is_in_goal(&self, world: &World) -> bool {
         world.is_in_goal(self.position)
+    }
+
+    pub fn points(&self) -> i32 {
+        self.color.points()
+    }
+
+    pub fn color(&self) -> Palette {
+        self.color.color()
+    }
+
+    pub fn matches_player(&self, player: &Player) -> bool {
+        player.color == Some(self.color())
     }
 
     fn update_movement(&mut self, world: &World) {
@@ -125,7 +140,7 @@ impl Firefly {
         state
             .players
             .iter()
-            .filter(|player| Some(self.color) == player.color)
+            .filter(|player| self.matches_player(player))
             .map(|player| {
                 (
                     player.attraction_target,
@@ -160,11 +175,6 @@ impl Firefly {
         }
     }
 
-    fn random_color() -> Palette {
-        let idx = random_range(0, 3) as usize;
-        *Self::COLORS.get(idx).unwrap_or(&Palette::Purple)
-    }
-
     fn spawn_particles(&mut self) {
         self.spawn_trail_particles();
         self.spawn_firefly_flash_particles();
@@ -179,7 +189,7 @@ impl Firefly {
                 0,
                 0,
                 30,
-                self.color.into(),
+                self.color().into(),
                 1,
             );
         }
@@ -192,7 +202,7 @@ impl Firefly {
             random_range(10, 15) as u8,
             random_range(1, 2) as i16,
             2,
-            self.color.into(),
+            self.color().into(),
         );
     }
 }
