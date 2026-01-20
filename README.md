@@ -20,6 +20,11 @@ To play the game you need the Firefly Zero emulator (or the hardware once it's
 released). Instructions on how to [install the Firefly Zero
 emulator](https://docs.fireflyzero.com/user/installation/).
 
+## Credits
+
+Programming: Olle & Catboots
+Graphics: Catboots
+Font: kenney (License CC0-1.0)
 
 ## License
 

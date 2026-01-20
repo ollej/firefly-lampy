@@ -2,22 +2,27 @@ use core::f32;
 
 use firefly_rust::Badge;
 
-pub const CREDITS: [&str; 7] = [
-    "Credits:",
-    "Programming: Olle Wreede & Catboots",
-    "Graphics: Catboots",
+pub const CREDITS: [&str; 9] = [
+    "<Credits>",
+    "",
+    "Programming:",
+    " -Olle Wreede",
+    " -Catboots",
+    "Graphics:",
+    " -Catboots",
     "Music: ??",
     "SFX: ??",
-    "",
-    "Press (E) to go back to game",
 ];
 
-pub const INFO: [&str; 5] = [
-    "Controls:",
-    "Steer with touchpad",
-    "Use buttons to flash light",
+pub const INFO: [&str; 8] = [
+    "<Controls>",
     "",
-    "Press (E) to go back to game",
+    "Steer with",
+    " touchpad.",
+    "",
+    "Use buttons to",
+    " shine flash",
+    " light.",
 ];
 
 pub const TILE_WIDTH: i32 = 16;

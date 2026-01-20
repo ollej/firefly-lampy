@@ -4,6 +4,7 @@ use firefly_rust::{clear_screen, draw_image, Color, Point};
 use crate::{constants::*, drawing::*, palette::*, state::*};
 
 pub fn render_title() {
+    clear_screen(Palette::LightPurple.into());
     let state = get_state();
     draw_image(&state.title.as_image(), Point { x: 0, y: 0 });
     display_centered_message(Some(Color::White), &["Lampy", "Press <E>"]);
@@ -41,11 +42,11 @@ pub fn render_ui() {
 }
 
 pub fn render_credits() {
-    clear_screen(Color::White);
-    display_left_message(&CREDITS);
+    clear_screen(Palette::LightPurple.into());
+    display_left_message(&CREDITS, Palette::Black.into());
 }
 
 pub fn render_info() {
-    clear_screen(Color::White);
-    display_left_message(&INFO);
+    clear_screen(Palette::LightPurple.into());
+    display_left_message(&INFO, Palette::Black.into());
 }

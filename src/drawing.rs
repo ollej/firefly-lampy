@@ -1,4 +1,4 @@
-use firefly_rust::{Color, HEIGHT, Point, Size, WIDTH, draw_sub_image, draw_text};
+use firefly_rust::{draw_sub_image, draw_text, Color, Point, Size, HEIGHT, WIDTH};
 
 use crate::{constants::*, state::*};
 
@@ -40,7 +40,7 @@ pub fn display_centered_message(color: Option<Color>, lines: &[&str]) {
     }
 }
 
-pub fn display_left_message(lines: &[&str]) {
+pub fn display_left_message(lines: &[&str], color: Color) {
     let y_pos: i32 = FONT_BASE_LINE + 4;
     for (i, line) in lines.iter().enumerate() {
         display_text_color(
@@ -49,7 +49,7 @@ pub fn display_left_message(lines: &[&str]) {
                 x: 4,
                 y: y_pos + i as i32 * LINE_HEIGHT,
             },
-            Color::Black,
+            color,
         );
     }
 }
