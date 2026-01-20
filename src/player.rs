@@ -66,28 +66,15 @@ impl Player {
     }
 
     fn update_position(&mut self, world: &World) {
-        // Read touchpad
         if let Some(pad) = read_pad(self.peer) {
-            self.direction = -pad.azimuth();
-            self.speed = pad.radius();
-            // Handle when azimuth is NaN
-            if self.direction.to_radians().is_nan() {
-                //log_debug("is_nan!");
+            let speed = pad.radius();
+            if speed <= 0.01 {
                 self.direction = Angle::ZERO;
                 self.speed = 0.0;
+            } else {
+                self.direction = -pad.azimuth();
+                self.speed = speed;
             }
-            /*
-            log_debug(
-                format!(
-                    "direction: {} speed: {} remainder: {} position: {:?}",
-                    self.direction.to_degrees(),
-                    self.speed,
-                    self.remainder,
-                    self.position
-                )
-                .as_str(),
-            );
-            */
             if self.speed > 100.0 {
                 // Slow down player when using flash light
                 let flashlight_speed = self.color.map(|_| Self::FLASHLIGHT_SPEED).unwrap_or(1.0);
