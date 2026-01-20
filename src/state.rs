@@ -4,8 +4,8 @@ use alloc::vec::Vec;
 use core::cell::OnceCell;
 
 use firefly_rust::{
-    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
-    Peers,
+    Buttons, Color, FileBuf, Peer, Peers, add_progress, audio, clear_screen, load_file_buf,
+    read_buttons,
 };
 
 use crate::{

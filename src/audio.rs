@@ -18,7 +18,6 @@ pub fn get_audio_player() -> &'static mut AudioPlayer {
 
 impl AudioPlayer {
     pub fn new() -> Self {
-
         let music_gain = audio::OUT.add_gain(0.5);
         let music_loop = music_gain.add_loop();
 
