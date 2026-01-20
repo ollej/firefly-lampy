@@ -26,6 +26,7 @@ impl Player {
     const CONE_LENGTH: f32 = 25.0;
     const ATTRACTION_LENGTH: f32 = 20.0;
     const SPEED: f32 = 0.002;
+    const FLASHLIGHT_SPEED: f32 = 0.4;
 
     pub fn new(peer: Peer, world: &World) -> Self {
         let direction = Angle::ZERO;
@@ -88,10 +89,13 @@ impl Player {
             );
             */
             if self.speed > 100.0 {
-                let (new_position, remainder) = self.position.point_from_distance_and_angle(
-                    self.speed * Self::SPEED + self.remainder,
-                    self.direction,
-                );
+                // Slow down player when using flash light
+                let flashlight_speed = self.color.map(|_| Self::FLASHLIGHT_SPEED).unwrap_or(1.0);
+                let distance = self.speed * Self::SPEED * flashlight_speed + self.remainder;
+
+                let (new_position, remainder) = self
+                    .position
+                    .point_from_distance_and_angle(distance, self.direction);
                 if new_position.x <= 0
                     || new_position.x >= world.pixel_width
                     || new_position.y <= 0
