@@ -7,19 +7,20 @@ use firefly_rust::{
 };
 
 use crate::{
-    audio::*, constants::*, fireflies::*, firefly::*, game_state::*, particles::*, player::*,
-    rendering::*, tile_array::*, utility::*, world::*,
+    audio::*, camera::*, constants::*, fireflies::*, firefly::*, game_state::*, particles::*,
+    player::*, rendering::*, tile_array::*, utility::*, world::*,
 };
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
     buttons: Buttons,
+    pub camera: Camera,
     pub debug: bool,
     fireflies: Fireflies,
     pub font: FileBuf,
     fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
-    me: Option<Peer>,
+    pub me: Option<Peer>,
     particles: ParticleSystem,
     pub players: Vec<Player>,
     pub spritesheet: FileBuf,
@@ -32,6 +33,7 @@ impl Default for State {
     fn default() -> Self {
         State {
             buttons: Buttons::default(),
+            camera: Camera::new(WORLD_WIDTH, WORLD_HEIGHT),
             debug: false,
             fireflies: Fireflies::new(),
             font: load_file_buf("font").unwrap(),
@@ -104,16 +106,15 @@ impl State {
     pub fn draw(&self) {
         clear_screen(Color::White);
 
-        if let Some(player) = self.local_player() {
-            self.world.draw(&player.camera);
+        self.world.draw(&self.camera);
 
-            for player in self.players.iter() {
-                player.draw();
-            }
-            self.fireflies.draw(&player.camera);
-            self.particles.render(&player.camera);
-            render_ui();
+        for player in self.players.iter() {
+            player.draw(&self.camera);
         }
+
+        self.fireflies.draw(&self.camera);
+        self.particles.render(&self.camera);
+        render_ui();
     }
 
     pub fn restart(&mut self) {
@@ -122,14 +123,12 @@ impl State {
         self.game_state = GameState::Playing;
     }
 
-    pub fn local_player(&self) -> Option<&Player> {
-        self.me
-            .and_then(|me| self.players.iter().find(|p| p.peer == me))
-    }
-
     fn update_playing(&mut self) {
         for player in self.players.iter_mut() {
             player.update(&self.world);
+            if self.me == Some(player.peer) {
+                self.camera.follow_player(player.position, 0.2);
+            }
         }
         let removed_fireflies = self.fireflies.update(&self.world);
         self.collect_fireflies(removed_fireflies);

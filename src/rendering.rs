@@ -1,5 +1,5 @@
 use alloc::format;
-use firefly_rust::{Color, Point, clear_screen, draw_image};
+use firefly_rust::{clear_screen, draw_image, Color, Point};
 
 use crate::{constants::*, drawing::*, game_state::*, palette::*, state::*};
 
@@ -27,13 +27,17 @@ pub fn render_gameover(won: bool) {
 
 pub fn render_ui() {
     let state = get_state();
-    if let Some(player) = state.local_player() {
-        display_text_color(
-            format!("Points: {}", player.points).as_str(),
-            Point::new(0, 14),
-            Palette::Black.into(),
-        );
-    }
+    state
+        .players
+        .iter()
+        .find(|player| Some(player.peer) == state.me)
+        .map(|player| {
+            display_text_color(
+                format!("Points: {}", player.points).as_str(),
+                Point::new(0, 14),
+                Palette::Black.into(),
+            );
+        });
 }
 
 pub fn render_credits() {

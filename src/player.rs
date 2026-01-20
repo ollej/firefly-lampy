@@ -19,7 +19,6 @@ pub struct Player {
     pub position: Point,
     remainder: f32,
     speed: f32,
-    pub camera: Camera,
 }
 
 impl Player {
@@ -41,7 +40,6 @@ impl Player {
             position,
             remainder: 0.0,
             speed: 0.0,
-            camera: Camera::new(WORLD_WIDTH, WORLD_HEIGHT),
         }
     }
 
@@ -109,9 +107,6 @@ impl Player {
             } else {
                 self.remainder = 0.0;
             }
-
-            //self.camera.set_camera_position(self.position);
-            self.camera.follow_player(self.position, 0.2);
         }
     }
 
@@ -138,13 +133,13 @@ impl Player {
         }
     }
 
-    pub fn draw(&self) {
-        self.draw_light_cone();
-        self.draw_lamp();
+    pub fn draw(&self, camera: &Camera) {
+        self.draw_light_cone(camera);
+        self.draw_lamp(camera);
     }
 
-    fn draw_lamp(&self) {
-        let transformed_position: Point = self.camera.world_to_screen(self.position);
+    fn draw_lamp(&self, camera: &Camera) {
+        let transformed_position: Point = camera.world_to_screen(self.position);
 
         draw_circle(
             Point {
@@ -160,9 +155,9 @@ impl Player {
         );
     }
 
-    fn draw_light_cone(&self) {
+    fn draw_light_cone(&self, camera: &Camera) {
         if let Some(color) = self.color {
-            let a = self.camera.world_to_screen(self.position);
+            let a = camera.world_to_screen(self.position);
             let (b, _) = a.point_from_distance_and_angle(
                 Self::CONE_LENGTH,
                 self.direction - Self::CONE_ANGLE,
