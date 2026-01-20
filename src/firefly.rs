@@ -1,4 +1,4 @@
-use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, Color, LineStyle, Point};
+use firefly_rust::{Angle, LineStyle, Point, draw_line, draw_point, math};
 
 use crate::{camera::*, palette::*, particles::*, point_math::*, state::*, utility::*, world::*};
 
@@ -22,18 +22,7 @@ impl Firefly {
         Palette::BrightBlue,
     ];
 
-    pub fn new() -> Self {
-        Firefly {
-            attracted_to: None,
-            color: Palette::Yellow,
-            direction: Angle::ZERO,
-            particles: ParticleSystem::new(100),
-            position: Point::new(10, 10),
-            remainder: 0.0,
-        }
-    }
-
-    pub fn random(world: &World) -> Self {
+    pub fn new_random(world: &World) -> Self {
         Firefly {
             attracted_to: None,
             color: Self::random_color(),

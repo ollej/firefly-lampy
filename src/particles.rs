@@ -66,7 +66,7 @@ impl ParticleSystem {
             let out_of_bounds =
                 p.x < -5 || p.x > WORLD_WIDTH + 5 || p.y < -5 || p.y > WORLD_HEIGHT + 5;
 
-            if p.lifetime <= 0 || out_of_bounds {
+            if p.lifetime == 0 || out_of_bounds {
                 self.particles.swap_remove(i);
             } else {
                 i += 1;

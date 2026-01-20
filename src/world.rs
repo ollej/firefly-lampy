@@ -4,7 +4,7 @@ use crate::drawing::*;
 use crate::tile::Tile;
 use crate::utility::random_range;
 use alloc::vec::Vec;
-use firefly_rust::{Point, log_debug};
+use firefly_rust::Point;
 
 pub struct World {
     tiles: Vec<Tile>,
@@ -15,29 +15,6 @@ pub struct World {
 }
 
 impl World {
-    pub fn new(width: i32, height: i32) -> Self {
-        let tiles_max = (width * height) as usize;
-        let mut tiles = Vec::with_capacity(tiles_max);
-
-        for y in 0..height {
-            for x in 0..width {
-                if y == 0 || y == height || x == 0 || x == width {
-                    tiles.push(Tile::new(x, y, 0, false))
-                } else {
-                    tiles.push(Tile::new(x, y, 1, false))
-                }
-            }
-        }
-
-        Self {
-            tiles,
-            width,
-            height,
-            pixel_width: width * TILE_WIDTH,
-            pixel_height: height * TILE_HEIGHT,
-        }
-    }
-
     pub fn new_from_2d_array(data: &[&[i32]]) -> Self {
         let height = data.len() as i32;
         let width = data.first().map_or(0, |row| row.len() as i32);
@@ -105,15 +82,9 @@ impl World {
     pub fn is_blocked(&self, point: Point) -> bool {
         let tile_x = point.x / TILE_WIDTH;
         let tile_y = point.y / TILE_HEIGHT;
-        //log_debug("checking blocks");
-        let solid = self
-            .get_tile(tile_x, tile_y)
+        self.get_tile(tile_x, tile_y)
             .map(|t| t.is_solid())
-            .unwrap_or(false);
-        //if solid {
-        //    log_debug("solid");
-        //}
-        solid
+            .unwrap_or(false)
     }
 
     pub fn is_in_goal(&self, point: Point) -> bool {

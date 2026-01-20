@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Color, Peer,
-    Point, Style,
+    Angle, Buttons, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
+    read_pad,
 };
 
 use crate::{

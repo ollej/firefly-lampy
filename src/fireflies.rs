@@ -1,7 +1,7 @@
 use alloc::vec;
 use alloc::vec::Vec;
 
-use crate::{audio::*, camera::*, firefly::*, player::*, utility::*, world::*};
+use crate::{camera::*, firefly::*, utility::*, world::*};
 
 pub struct Fireflies {
     fireflies: Vec<Firefly>,
@@ -14,7 +14,7 @@ impl Fireflies {
 
     pub fn update(&mut self, world: &World) -> Vec<Firefly> {
         if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
-            self.fireflies.push(Firefly::random(world));
+            self.fireflies.push(Firefly::new_random(world));
         }
         for firefly in self.fireflies.iter_mut() {
             firefly.update(world);
