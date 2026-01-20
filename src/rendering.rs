@@ -33,10 +33,12 @@ pub fn render_ui() {
         .iter()
         .find(|player| Some(player.peer) == state.me)
         .map(|player| {
+            let text = format!("Points:{}", player.points);
+            display_text_color(text.as_str(), Point::new(0, 14), Palette::Black.into());
             display_text_color(
-                format!("Points: {}", player.points).as_str(),
-                Point::new(0, 14),
-                Palette::Black.into(),
+                text.as_str(),
+                Point::new(-1, 13),
+                Palette::LightPurple.into(),
             );
         });
 }
