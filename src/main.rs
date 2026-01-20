@@ -41,6 +41,7 @@ extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
             state.debug = val == 1;
             1
         }
+        3 => state.add_points(val),
         _ => 0,
     }
 }

@@ -17,6 +17,7 @@ pling = { path = "assets/score.wav" }
 [cheats]
 restart = 1
 debug = 2
+add-points = 3
 
 # https://lospec.com/palette-list/steam-lords
 [palettes.steam-lords]

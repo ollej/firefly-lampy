@@ -1,8 +1,8 @@
 use alloc::vec::Vec;
 use core::cell::OnceCell;
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, add_progress, audio, clear_screen, load_file_buf,
-    read_buttons,
+    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
+    Peers,
 };
 
 use crate::{
@@ -120,6 +120,16 @@ impl State {
         self.fireflies = Fireflies::new();
         self.players.iter_mut().for_each(|player| player.points = 0);
         self.game_state = GameState::Playing;
+    }
+
+    pub fn add_points(&mut self, points: i32) -> i32 {
+        for player in self.players.iter_mut() {
+            if self.me == Some(player.peer) {
+                player.points += points;
+                return player.points;
+            }
+        }
+        0
     }
 
     fn update_playing(&mut self) {
