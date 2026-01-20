@@ -1,14 +1,19 @@
+use alloc::format;
+use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
+
 use firefly_rust::{
     add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
     Peers,
 };
 
 use crate::{
-    audio::*, camera::*, constants::*, fireflies::*, firefly::*, game_state::*, particles::*,
-    player::*, rendering::*, tile_array::*, utility::*, world::*,
+    audio::*, camera::Camera, constants::*, fireflies::Fireflies, firefly::Firefly,
+    game_state::GameState, particles::ParticleSystem, player::Player, rendering::*, text::Text,
+    tile_array::TILE_ARRAY, utility::random_range, world::World,
 };
+
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
 pub struct State {
@@ -23,6 +28,7 @@ pub struct State {
     particles: ParticleSystem,
     pub players: Vec<Player>,
     pub spritesheet: FileBuf,
+    texts: Vec<Text>,
     theme: audio::Node<audio::Gain>,
     pub title: FileBuf,
     world: World,
@@ -42,6 +48,7 @@ impl Default for State {
             particles: ParticleSystem::new(200),
             players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
+            texts: vec![],
             theme: audio::OUT.add_gain(0.5),
             title: load_file_buf("_splash").unwrap(),
             world: World::new_from_2d_array(TILE_ARRAY),
@@ -115,6 +122,7 @@ impl State {
 
         self.fireflies.draw(&self.camera);
         self.particles.render(&self.camera);
+        self.draw_texts();
         render_ui();
     }
 
@@ -123,6 +131,8 @@ impl State {
         self.players
             .iter_mut()
             .for_each(|player| player.reset(&self.world));
+        self.texts = vec![];
+        self.particles = ParticleSystem::new(200);
         self.game_state = GameState::Playing;
     }
 
@@ -146,7 +156,19 @@ impl State {
         let removed_fireflies = self.fireflies.update(&self.world);
         self.collect_fireflies(removed_fireflies);
         self.check_win_condition();
+        self.update_texts();
         self.particles.update();
+    }
+
+    fn draw_texts(&self) {
+        for text in self.texts.iter() {
+            text.draw(&self.camera);
+        }
+    }
+
+    fn update_texts(&mut self) {
+        self.texts.iter_mut().for_each(|text| text.update());
+        self.texts.retain(|text| !text.remove());
     }
 
     fn check_win_condition(&mut self) {
@@ -173,6 +195,7 @@ impl State {
                     player.points += firefly.points();
                     get_audio_player().play_sfx("pling");
                     self.spawn_collection_burst(firefly);
+                    self.spawn_point_text(firefly);
                     return;
                 }
             }
@@ -188,5 +211,11 @@ impl State {
             8,
             firefly.color().into(),
         );
+    }
+
+    pub fn spawn_point_text(&mut self, firefly: &Firefly) {
+        let content = format!("+{}", firefly.points());
+        self.texts
+            .push(Text::new(content, firefly.color().into(), firefly.position));
     }
 }

@@ -20,6 +20,7 @@ mod point_math;
 mod rectangle;
 mod rendering;
 mod state;
+mod text;
 mod tile;
 mod tile_array;
 mod utility;
@@ -27,9 +28,9 @@ mod world;
 
 use crate::utility::set_colors;
 use audio::*;
-use game_state::*;
+use game_state::GameState;
 use rendering::*;
-use state::*;
+use state::{get_state, State, STATE};
 
 #[unsafe(no_mangle)]
 extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
