@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    Angle, Buttons, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Peer, Point,
+    Style,
 };
 
 use crate::{
@@ -27,9 +27,9 @@ impl Player {
     const ATTRACTION_LENGTH: f32 = 20.0;
     const SPEED: f32 = 0.002;
 
-    pub fn new(peer: Peer) -> Self {
+    pub fn new(peer: Peer, world: &World) -> Self {
         let direction = Angle::ZERO;
-        let position = Point::new(120, 80);
+        let position = world.random_unblocked_point();
         Self {
             attraction_target: Self::calculate_attraction_target(position, direction),
             buttons: Buttons::default(),
@@ -43,15 +43,25 @@ impl Player {
         }
     }
 
+    pub fn update(&mut self, world: &World) {
+        self.update_position(world);
+        self.update_light_cone();
+    }
+
+    pub fn draw(&self, camera: &Camera) {
+        self.draw_light_cone(camera);
+        self.draw_lamp(camera);
+    }
+
+    pub fn reset(&mut self, world: &World) {
+        self.points = 0;
+        self.position = world.random_unblocked_point();
+    }
+
     fn calculate_attraction_target(position: Point, direction: Angle) -> Point {
         let (new_position, _remainder) =
             position.point_from_distance_and_angle(Self::ATTRACTION_LENGTH, direction);
         new_position
-    }
-
-    pub fn update(&mut self, world: &World) {
-        self.update_position(world);
-        self.update_light_cone();
     }
 
     fn update_position(&mut self, world: &World) {
@@ -131,11 +141,6 @@ impl Player {
         if !self.buttons.any() {
             self.color = None;
         }
-    }
-
-    pub fn draw(&self, camera: &Camera) {
-        self.draw_light_cone(camera);
-        self.draw_lamp(camera);
     }
 
     fn draw_lamp(&self, camera: &Camera) {

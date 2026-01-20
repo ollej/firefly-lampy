@@ -58,9 +58,11 @@ impl State {
     const WIN_POINTS: i32 = 10;
 
     pub fn new(player: Peer, peers: Peers) -> Self {
+        let world = World::new_from_2d_array(TILE_ARRAY);
         State {
-            players: peers.iter().map(Player::new).collect(),
+            players: peers.iter().map(|peer| Player::new(peer, &world)).collect(),
             me: Some(player),
+            world,
             ..State::default()
         }
     }
@@ -118,7 +120,9 @@ impl State {
 
     pub fn restart(&mut self) {
         self.fireflies = Fireflies::new();
-        self.players.iter_mut().for_each(|player| player.points = 0);
+        self.players
+            .iter_mut()
+            .for_each(|player| player.reset(&self.world));
         self.game_state = GameState::Playing;
     }
 

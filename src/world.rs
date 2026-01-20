@@ -46,23 +46,33 @@ impl World {
         }
     }
 
+    pub fn draw(&self, camera: &Camera) {
+        let screen_start = camera.screen_to_world(Point { x: 0, y: 0 });
+        let screen_end = camera.screen_to_world(Point {
+            x: SCREEN_WIDTH,
+            y: SCREEN_HEIGHT,
+        });
+
+        let start_x = (screen_start.x / TILE_WIDTH).max(0);
+        let start_y = (screen_start.y / TILE_HEIGHT).max(0);
+        let end_x = ((screen_end.x / TILE_WIDTH) + 1).min(self.width);
+        let end_y = ((screen_end.y / TILE_HEIGHT) + 1).min(self.height);
+
+        // Culling out-of-bounds tiles
+        for y in start_y..end_y {
+            for x in start_x..end_x {
+                if let Some(tile) = self.get_tile(x, y) {
+                    let screen_pos = camera.world_to_screen(tile.position);
+                    draw_tile(tile.sprite_index, screen_pos);
+                }
+            }
+        }
+    }
+
     pub fn draw_all_without_camera(&self) {
         // For testing / debug
         for tile in self.tiles.iter() {
             draw_tile(tile.sprite_index, tile.position);
-        }
-    }
-
-    fn get_tile(&self, x: i32, y: i32) -> Option<&Tile> {
-        let index = self.convert_pos_to_index(x, y)?;
-        self.tiles.get(index)
-    }
-
-    fn convert_pos_to_index(&self, x: i32, y: i32) -> Option<usize> {
-        if x >= 0 && x < self.width && y >= 0 && y < self.height {
-            Some((y * self.width + x) as usize)
-        } else {
-            None
         }
     }
 
@@ -95,26 +105,16 @@ impl World {
             .unwrap_or(false)
     }
 
-    pub fn draw(&self, camera: &Camera) {
-        let screen_start = camera.screen_to_world(Point { x: 0, y: 0 });
-        let screen_end = camera.screen_to_world(Point {
-            x: SCREEN_WIDTH,
-            y: SCREEN_HEIGHT,
-        });
+    fn get_tile(&self, x: i32, y: i32) -> Option<&Tile> {
+        let index = self.convert_pos_to_index(x, y)?;
+        self.tiles.get(index)
+    }
 
-        let start_x = (screen_start.x / TILE_WIDTH).max(0);
-        let start_y = (screen_start.y / TILE_HEIGHT).max(0);
-        let end_x = ((screen_end.x / TILE_WIDTH) + 1).min(self.width);
-        let end_y = ((screen_end.y / TILE_HEIGHT) + 1).min(self.height);
-
-        // Culling out-of-bounds tiles
-        for y in start_y..end_y {
-            for x in start_x..end_x {
-                if let Some(tile) = self.get_tile(x, y) {
-                    let screen_pos = camera.world_to_screen(tile.position);
-                    draw_tile(tile.sprite_index, screen_pos);
-                }
-            }
+    fn convert_pos_to_index(&self, x: i32, y: i32) -> Option<usize> {
+        if x >= 0 && x < self.width && y >= 0 && y < self.height {
+            Some((y * self.width + x) as usize)
+        } else {
+            None
         }
     }
 }
