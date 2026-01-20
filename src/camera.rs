@@ -16,10 +16,6 @@ impl Camera {
         }
     }
 
-    pub fn set_camera_position(&mut self, position: Point) {
-        self.position = position;
-    }
-
     pub fn world_to_screen(&self, world_pos: Point) -> Point {
         Point {
             x: world_pos.x - self.position.x,

@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{clear_screen, draw_image, Color, Point};
 
-use crate::{constants::*, drawing::*, game_state::*, palette::*, state::*};
+use crate::{constants::*, drawing::*, palette::*, state::*};
 
 pub fn render_title() {
     let state = get_state();

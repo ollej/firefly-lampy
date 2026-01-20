@@ -19,10 +19,6 @@ pub fn draw_tile(sprite: Sprite, point: Point) {
     draw_sub_image(&tile_sprite, point);
 }
 
-pub fn display_text(text: &str, position: Point) {
-    display_text_color(text, position, Color::Black);
-}
-
 pub fn display_text_color(text: &str, position: Point, color: Color) {
     let state = get_state();
     let font = state.font.as_font();
