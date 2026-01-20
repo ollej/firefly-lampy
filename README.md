@@ -9,10 +9,11 @@ flashlights.
 
 ## Controls
 
-- Steer with the touchpad, the left joystick on controller while holding down left shoulder button, o r arrow keys on keyboard.
+- Steer with the touchpad, the left joystick on controller while holding down left shoulder button, or arrow keys on keyboard.
 - Use buttons to activate different colored flashlights.
 - Trap fireflies in the flashlight matching their color and bring them to the collection point in the center of the play area.
-- First player to collect 10 fireflies wins.
+- First player to collect 20 fireflies wins.
+- Fireflies are worth different amount of points.
 
 ## Installation
 
