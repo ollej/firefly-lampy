@@ -13,6 +13,8 @@ pub struct Firefly {
     particles: ParticleSystem,
     pub position: Point,
     remainder: f32,
+    cached_pos: Option<Point>,
+    cache_age: u8,
 }
 
 impl Firefly {
@@ -26,9 +28,11 @@ impl Firefly {
             attracted_to: None,
             color,
             direction: Self::random_direction(),
-            particles: ParticleSystem::new(100),
+            particles: ParticleSystem::new(20),
             position: world.random_unblocked_point_in_rectangle(color.starting_rect()),
             remainder: 0.0,
+            cached_pos: None,
+            cache_age: 255,
         }
     }
 
@@ -69,6 +73,14 @@ impl Firefly {
     }
 
     fn update_movement(&mut self, world: &World) {
+
+
+        if self.cache_age > 5 {
+            self.cached_pos = self.find_closest_target();
+            self.cache_age = 0;
+        } else {
+            self.cache_age += 1;
+        }
         self.change_direction();
 
         // Skip movement if at attraction_target
@@ -113,7 +125,7 @@ impl Firefly {
     }
 
     fn change_direction(&mut self) {
-        if let Some(attraction_target) = self.find_closest_target() {
+        if let Some(attraction_target) = self.cached_pos {
             // Set direction towards closest attraction target within reach
             self.attracted_to = Some(attraction_target);
             self.direction = self.position.angle_to(&attraction_target);
@@ -190,13 +202,15 @@ impl Firefly {
     }
 
     fn spawn_firefly_flash_particles(&mut self) {
-        self.particles.spawn_radial_burst(
-            self.position.x,
-            self.position.y,
-            random_range(10, 15) as u8,
-            random_range(1, 2) as i16,
-            2,
-            self.color().into(),
-        );
+        if random_range(0, 60) < 10 {
+            self.particles.spawn_radial_burst(
+                self.position.x,
+                self.position.y,
+                random_range(8, 14) as u8,
+                random_range(1, 2) as i16,
+                2,
+                self.color().into(),
+            );
+        }
     }
 }
