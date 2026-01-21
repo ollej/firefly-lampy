@@ -2,6 +2,7 @@ use crate::camera::*;
 use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 use crate::utility::random_range;
 use alloc::vec::Vec;
+use alloc::vec;
 use firefly_rust::{Color, Point, draw_point};
 
 const GRAVITY: i16 = 0;
@@ -15,7 +16,7 @@ const COS_TABLE: [i16; 16] = [
     16, 15, 11, 6, 0, -6, -11, -15, -16, -15, -11, -6, 0, 6, 11, 15,
 ];
 
-#[derive(Clone, Copy)]
+#[derive(Default, Clone, Copy)]
 pub struct Particle {
     pub x: i32,
     pub y: i32,
@@ -25,6 +26,7 @@ pub struct Particle {
     pub max_lifetime: u8,
     pub color: Color,
     pub size: u8,
+    pub active: bool,
 }
 
 impl Particle {
@@ -34,6 +36,11 @@ impl Particle {
         }
 
         ((self.lifetime as u16 * 255) / self.max_lifetime as u16) as u8
+    }
+
+    fn deactivate_particle(&mut self) {
+        self.active = false;
+        self.lifetime = 0;
     }
 }
 
@@ -46,39 +53,42 @@ pub struct ParticleSystem {
 impl ParticleSystem {
     pub fn new(max_particles: usize) -> Self {
         Self {
-            particles: Vec::with_capacity(max_particles),
+            particles: vec![Particle::default(); max_particles],
             max_particles,
         }
     }
 
     pub fn update(&mut self) {
-        let mut i = 0;
-        while i < self.particles.len() {
-            let p = &mut self.particles[i];
 
-            p.x += (p.vx >> FIXED_POINT_SHIFT) as i32;
-            p.y += (p.vy >> FIXED_POINT_SHIFT) as i32;
+        for particle in self.particles.iter_mut(){
+            if !particle.active {
+                continue;
+            }
 
-            //p.vy = p.vy.saturating_add(GRAVITY);
+            particle.x += (particle.vx >> FIXED_POINT_SHIFT) as i32;
+            particle.y += (particle.vy >> FIXED_POINT_SHIFT) as i32;
 
-            p.lifetime = p.lifetime.saturating_sub(1);
+            particle.lifetime = particle.lifetime.saturating_sub(1);
 
             let out_of_bounds =
-                p.x < -5 || p.x > WORLD_WIDTH + 5 || p.y < -5 || p.y > WORLD_HEIGHT + 5;
+                particle.x < -5 || particle.x > WORLD_WIDTH + 5 || particle.y < -5 || particle.y > WORLD_HEIGHT + 5;
 
-            if p.lifetime == 0 || out_of_bounds {
-                self.particles.swap_remove(i);
-            } else {
-                i += 1;
+            if particle.lifetime == 0 || out_of_bounds {
+                particle.deactivate_particle();
             }
-        }
+        }   
     }
 
     pub fn render(&self, camera: &Camera) {
-        for p in &self.particles {
-            let position = Point { x: p.x, y: p.y };
+        for particle in self.particles.iter() {
+            if !particle.active{
+                continue;
+            }
+
+            let position = Point { x: particle.x, y: particle.y };
             let transformed_position = camera.world_to_screen(position);
-            draw_point(transformed_position, p.color);
+            draw_point(transformed_position, particle.color);
+
         }
     }
 
@@ -92,20 +102,17 @@ impl ParticleSystem {
         color: Color,
         size: u8,
     ) {
-        if self.particles.len() >= self.max_particles {
-            return; // TODO: Implent recycling
+        if let Some(particle) = self.particles.iter_mut().find(|p| !p.active){
+            particle.x = x;
+            particle.y = y;
+            particle.vx = vx;
+            particle.vy = vy;
+            particle.lifetime = lifetime;
+            particle.max_lifetime = lifetime;
+            particle.color = color;
+            particle.size = size;
+            particle.active = true;
         }
-
-        self.particles.push(Particle {
-            x,
-            y,
-            vx,
-            vy,
-            lifetime,
-            max_lifetime: lifetime,
-            color,
-            size,
-        });
     }
 
     pub fn spawn_radial_burst(
@@ -117,24 +124,43 @@ impl ParticleSystem {
         lifetime: u8,
         color: Color,
     ) {
-        for _i in 0..count {
-            if self.particles.len() >= self.max_particles {
+        let mut spawned_particles = 0;
+
+        for particle in self.particles.iter_mut(){
+            if spawned_particles >= count {
                 break;
             }
 
-            let rand_num = random_range(0, 15);
-            let dir = (rand_num) as usize;
+            if particle.active {
+                continue;
+            }
+
+            let dir = (random_range(0, 15)) as usize;
             let vx = speed * COS_TABLE[dir];
             let vy = speed * SIN_TABLE[dir];
-            self.spawn(x, y, vx, vy, lifetime, color, 1);
+
+            particle.x = x;
+            particle.y = y;
+            particle.vx = vx;
+            particle.vy = vy;
+            particle.lifetime = lifetime;
+            particle.max_lifetime = lifetime;
+            particle.color = color;
+            particle.size = 1;
+            particle.active = true;
+
+            spawned_particles += 1;
+
         }
     }
 
     pub fn clear(&mut self) {
-        self.particles.clear();
+        for particle in self.particles.iter_mut() {
+            particle.deactivate_particle();
+        }
     }
 
     pub fn count(&self) -> usize {
-        self.particles.len()
+        self.particles.iter().filter(|p|p.active).count()
     }
 }
