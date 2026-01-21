@@ -16,13 +16,13 @@ pub const CREDITS: [&str; 9] = [
 
 pub const INFO: [&str; 8] = [
     "<Controls>",
-    "",
     "Steer with",
     " touchpad.",
-    "",
     "Use buttons to",
     " shine flash",
     " light.",
+    "Guide fireflies",
+    " to score pad",
 ];
 
 pub const TILE_WIDTH: i32 = 16;
