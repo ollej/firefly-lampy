@@ -1,6 +1,6 @@
 use alloc::string::String;
 
-use firefly_rust::{Color, Point, draw_text, math};
+use firefly_rust::{draw_text, math, Color, Point};
 
 use crate::{camera::Camera, palette::Palette, state::get_state};
 
@@ -36,7 +36,7 @@ impl Text {
 
     pub fn draw(&self, camera: &Camera) {
         let state = get_state();
-        let font = state.font_points.as_font();
+        let font = state.font_small.as_font();
         let position = camera.world_to_screen(self.position);
         let shadow_position = position + Point::new(1, 1);
         draw_text(

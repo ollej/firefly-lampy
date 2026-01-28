@@ -10,19 +10,17 @@ pub const CREDITS: [&str; 9] = [
     " -Catboots",
     "Graphics:",
     " -Catboots",
-    "Music: ??",
-    "SFX: ??",
+    "Music + SFX:",
+    " -OpenGameArt",
 ];
 
-pub const INFO: [&str; 8] = [
-    "<Controls>",
-    "Steer with",
-    " touchpad.",
-    "Use buttons to",
-    " shine flash",
-    " light.",
-    "Guide fireflies",
-    " to score pad",
+pub const INFO: [&str; 6] = [
+    "Guide the fireflies to the score pad in the",
+    " middle of the map to score points.",
+    "Attract fireflies by shining a flashlight",
+    " of the same color at them.",
+    "Steer your circle with touchpad.",
+    "Use buttons to shine flash light.",
 ];
 
 pub const TILE_WIDTH: i32 = 16;
@@ -30,9 +28,10 @@ pub const TILE_HEIGHT: i32 = 16;
 pub const SPRITES_W: i32 = 16;
 pub const SPRITES_H: i32 = 16;
 pub const TILES_H: i32 = 30;
-pub const HALF_FONT_WIDTH: i32 = 8;
-pub const FONT_BASE_LINE: i32 = 16;
-pub const LINE_HEIGHT: i32 = 16;
+pub const FONT_LARGE_HEIGHT: i32 = 16;
+pub const FONT_LARGE_HALF_WIDTH: i32 = 8;
+pub const FONT_SMALL_HEIGHT: i32 = 8;
+pub const FONT_SMALL_HALF_WIDTH: i32 = 4;
 pub const BADGE_WINS: Badge = Badge(1);
 pub const BADGE_DEATHS: Badge = Badge(2);
 pub const PI: f32 = f32::consts::PI;
