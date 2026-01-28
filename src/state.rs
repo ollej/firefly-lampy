@@ -4,8 +4,8 @@ use alloc::vec::Vec;
 use core::cell::OnceCell;
 
 use firefly_rust::{
-    Buttons, Color, FileBuf, Peer, Peers, add_progress, audio, clear_screen, load_file_buf,
-    read_buttons,
+    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
+    Peers,
 };
 
 use crate::{
@@ -31,7 +31,7 @@ pub struct State {
     pub spritesheet: FileBuf,
     texts: Vec<Text>,
     theme: audio::Node<audio::Gain>,
-    pub title: FileBuf,
+    //pub title: FileBuf,
     world: World,
 }
 
@@ -52,7 +52,7 @@ impl Default for State {
             spritesheet: load_file_buf("spritesheet").unwrap(),
             texts: vec![],
             theme: audio::OUT.add_gain(0.5),
-            title: load_file_buf("_splash").unwrap(),
+            //title: load_file_buf("_splash").unwrap(),
             world: World::new_from_2d_array(TILE_ARRAY),
         }
     }

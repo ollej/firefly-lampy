@@ -4,7 +4,6 @@ author_name = "Olle & Catboots"
 app_name = "Lampy"
 
 [files]
-_splash = { path = "assets/title.png" }
 spritesheet = { path = "assets/spritesheet.png", palette="steam-lords" }
 font = { path = "assets/kenney_16x16.fff" }
 font_points = { path = "assets/pico8_4x6.fff" }
