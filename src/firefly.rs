@@ -1,4 +1,6 @@
-use firefly_rust::{Angle, LineStyle, Point, draw_line, draw_point, math};
+use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, LineStyle, Point};
+
+use alloc::format;
 
 use crate::{
     camera::Camera, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, firefly_color::FireflyColor,
@@ -73,8 +75,6 @@ impl Firefly {
     }
 
     fn update_movement(&mut self, world: &World) {
-
-
         if self.cache_age > 5 {
             self.cached_pos = self.find_closest_target();
             self.cache_age = 0;
@@ -106,21 +106,17 @@ impl Firefly {
 
     fn change_direction_on_wall_hit(&mut self, new_position: Point, world: &World) {
         // Change direction when hitting walls
-        let posx = Point {
-            x: new_position.x,
-            y: self.position.y,
-        };
-        if world.is_blocked(posx) || new_position.x < 0 || new_position.x > (WORLD_WIDTH - 1) {
-            let new_direction = Angle::HALF_CIRCLE - self.direction;
-            self.direction = new_direction.normalize();
-        }
-        let posy = Point {
-            x: self.position.x,
-            y: new_position.y,
-        };
-        if world.is_blocked(posy) || new_position.y < 0 || new_position.y > (WORLD_HEIGHT - 1) {
-            let new_direction = Angle::FULL_CIRCLE - self.direction;
-            self.direction = new_direction.normalize();
+        if world.is_blocked(new_position) {
+            let random_angle = Angle::from_degrees(30.0 + random_range(0, 120) as f32);
+            if new_position.x > self.position.x {
+                self.direction = Angle::QUARTER_CIRCLE + random_angle;
+            } else if new_position.x < self.position.x {
+                self.direction = (Angle::from_degrees(270.0) + random_angle).normalize();
+            } else if new_position.y > self.position.y {
+                self.direction = Angle::HALF_CIRCLE + random_angle;
+            } else {
+                self.direction = Angle::ZERO + random_angle;
+            }
         }
     }
 
