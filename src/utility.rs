@@ -1,4 +1,4 @@
-use firefly_rust::{Color, RGB, get_random, set_color};
+use firefly_rust::{get_random, set_color, Color, RGB};
 
 pub fn random_range(min: u32, max: u32) -> u32 {
     if min >= max {
@@ -6,6 +6,17 @@ pub fn random_range(min: u32, max: u32) -> u32 {
     }
     let range = max - min + 1;
     min + (get_random() % range)
+}
+
+#[inline]
+pub fn movement_to_step(amount: i32) -> i32 {
+    if amount > 0 {
+        1
+    } else if amount < 0 {
+        -1
+    } else {
+        0
+    }
 }
 
 pub fn set_colors() {

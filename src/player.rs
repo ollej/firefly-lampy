@@ -1,12 +1,12 @@
 use alloc::format;
 use firefly_rust::{
-    Angle, Buttons, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
-    read_pad,
+    draw_circle, draw_triangle, log_debug, math::floor, read_buttons, read_pad, Angle, Buttons,
+    Peer, Point, Style,
 };
 
 use crate::{
     camera::*, constants::PI, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, palette::*,
-    point_math::*, world::*,
+    point_math::*, utility::movement_to_step, world::*,
 };
 
 pub struct Player {
@@ -85,16 +85,37 @@ impl Player {
                     .point_from_distance_and_angle(distance, self.direction);
                 self.debug_teleport(new_position);
                 self.remainder = remainder;
-                if !world.is_blocked(new_position) {
-                    self.position = Point {
-                        x: new_position.x.clamp(0, WORLD_WIDTH - 1),
-                        y: new_position.y.clamp(0, WORLD_HEIGHT - 1),
-                    };
+                let old_position = self.position;
+                self.move_horizontally(new_position, world);
+                self.move_vertically(new_position, world);
+                if self.position != old_position {
                     self.attraction_target =
                         Self::calculate_attraction_target(self.position, self.direction);
                 };
             } else {
                 self.remainder = 0.0;
+            }
+        }
+    }
+
+    fn move_horizontally(&mut self, target_position: Point, world: &World) {
+        let amount = target_position.x - self.position.x;
+        let step = movement_to_step(amount);
+        for _ in 0..amount.abs() as i32 {
+            let test_pos = self.position.addx(step);
+            if !world.is_blocked(test_pos) {
+                self.position.x = test_pos.x;
+            }
+        }
+    }
+
+    fn move_vertically(&mut self, target_position: Point, world: &World) {
+        let amount = target_position.y - self.position.y;
+        let step = movement_to_step(amount);
+        for _ in 0..amount.abs() as i32 {
+            let test_pos = self.position.addy(step);
+            if !world.is_blocked(test_pos) {
+                self.position.y = test_pos.y;
             }
         }
     }
