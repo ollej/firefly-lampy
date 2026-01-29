@@ -2,11 +2,7 @@ use alloc::format;
 use alloc::vec;
 use alloc::vec::Vec;
 use core::cell::OnceCell;
-
-use firefly_rust::{
-    add_progress, audio, clear_screen, load_file_buf, read_buttons, Buttons, Color, FileBuf, Peer,
-    Peers,
-};
+use firefly_rust::*;
 
 use crate::{
     audio::*, camera::Camera, constants::*, fireflies::Fireflies, firefly::Firefly,
@@ -114,7 +110,7 @@ impl State {
     }
 
     pub fn draw(&self) {
-        clear_screen(Color::White);
+        clear_screen(Color::from(6));
 
         self.world.draw(&self.camera);
 

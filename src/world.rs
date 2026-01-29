@@ -70,7 +70,9 @@ impl World {
         // Culling out-of-bounds tiles
         for y in start_y..end_y {
             for x in start_x..end_x {
-                if let Some(tile) = self.get_tile(x, y) {
+                if let Some(tile) = self.get_tile(x, y)
+                    && tile.sprite_index != 0
+                {
                     let screen_pos = camera.world_to_screen(tile.position);
                     draw_tile(tile.sprite_index, screen_pos);
                 }
