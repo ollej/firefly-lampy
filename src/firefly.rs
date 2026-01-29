@@ -1,6 +1,4 @@
-use firefly_rust::{Angle, LineStyle, Point, draw_line, draw_point, log_debug, math};
-
-use alloc::format;
+use firefly_rust::{draw_line, draw_point, math, Angle, LineStyle, Point};
 
 use crate::{
     camera::Camera, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, firefly_color::FireflyColor,
