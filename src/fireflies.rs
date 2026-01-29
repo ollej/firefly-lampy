@@ -12,20 +12,21 @@ impl Fireflies {
         Self { fireflies: vec![] }
     }
 
-    pub fn update(&mut self, world: &World) -> Vec<Firefly> {
+    pub fn update(&mut self, world: &World, camera: &Camera) -> Vec<Firefly> {
         if self.fireflies.len() < Firefly::MAX_COUNT as usize && random_range(0, 100) < 10 {
             self.fireflies.push(Firefly::new_random(world));
         }
         for firefly in self.fireflies.iter_mut() {
-            firefly.update(world);
+            firefly.update(world, camera.is_in_screen(firefly.position));
         }
         self.collect_fireflies(world)
     }
 
     pub fn draw(&self, camera: &Camera) {
-        for firefly in self.fireflies.iter() {
-            firefly.draw(camera);
-        }
+        self.fireflies
+            .iter()
+            .filter(|firefly| camera.is_in_screen(firefly.position))
+            .for_each(|firefly| firefly.draw(camera))
     }
 
     fn collect_fireflies(&mut self, world: &World) -> Vec<Firefly> {

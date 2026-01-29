@@ -1,14 +1,13 @@
-use alloc::format;
-use alloc::vec;
-use alloc::vec::Vec;
-use core::cell::OnceCell;
-use firefly_rust::*;
-
 use crate::{
     audio::*, camera::Camera, constants::*, fireflies::Fireflies, firefly::Firefly,
     game_state::GameState, particles::ParticleSystem, player::Player, point_math::PointMath,
     rendering::*, text::Text, tile_array::TILE_ARRAY, utility::random_range, world::World,
 };
+use alloc::format;
+use alloc::vec;
+use alloc::vec::Vec;
+use core::cell::OnceCell;
+use firefly_rust::*;
 
 pub static mut STATE: OnceCell<State> = OnceCell::new();
 
@@ -151,7 +150,7 @@ impl State {
                 self.camera.follow_player(player.position, 0.2);
             }
         }
-        let removed_fireflies = self.fireflies.update(&self.world);
+        let removed_fireflies = self.fireflies.update(&self.world, &self.camera);
         self.collect_fireflies(removed_fireflies);
         self.check_win_condition();
         self.update_texts();

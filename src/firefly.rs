@@ -1,6 +1,4 @@
-use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, LineStyle, Point};
-
-use alloc::format;
+use firefly_rust::{draw_line, draw_point, math, Angle, LineStyle, Point};
 
 use crate::{
     camera::Camera, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, firefly_color::FireflyColor,
@@ -42,9 +40,11 @@ impl Firefly {
         Angle::from_degrees(random_range(0, 360) as f32)
     }
 
-    pub fn update(&mut self, world: &World) {
+    pub fn update(&mut self, world: &World, on_screen: bool) {
         self.update_movement(world);
-        self.spawn_particles();
+        if on_screen {
+            self.spawn_particles();
+        }
     }
 
     pub fn draw(&self, camera: &Camera) {

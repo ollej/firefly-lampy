@@ -1,8 +1,8 @@
 use crate::camera::*;
 use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 use crate::utility::random_range;
-use alloc::vec::Vec;
 use alloc::vec;
+use alloc::vec::Vec;
 use firefly_rust::{Color, Point, draw_point};
 
 const GRAVITY: i16 = 0;
@@ -59,8 +59,7 @@ impl ParticleSystem {
     }
 
     pub fn update(&mut self) {
-
-        for particle in self.particles.iter_mut(){
+        for particle in self.particles.iter_mut() {
             if !particle.active {
                 continue;
             }
@@ -70,25 +69,29 @@ impl ParticleSystem {
 
             particle.lifetime = particle.lifetime.saturating_sub(1);
 
-            let out_of_bounds =
-                particle.x < -5 || particle.x > WORLD_WIDTH + 5 || particle.y < -5 || particle.y > WORLD_HEIGHT + 5;
+            let out_of_bounds = particle.x < -5
+                || particle.x > WORLD_WIDTH + 5
+                || particle.y < -5
+                || particle.y > WORLD_HEIGHT + 5;
 
             if particle.lifetime == 0 || out_of_bounds {
                 particle.deactivate_particle();
             }
-        }   
+        }
     }
 
     pub fn render(&self, camera: &Camera) {
         for particle in self.particles.iter() {
-            if !particle.active{
+            if !particle.active {
                 continue;
             }
 
-            let position = Point { x: particle.x, y: particle.y };
+            let position = Point {
+                x: particle.x,
+                y: particle.y,
+            };
             let transformed_position = camera.world_to_screen(position);
             draw_point(transformed_position, particle.color);
-
         }
     }
 
@@ -102,7 +105,7 @@ impl ParticleSystem {
         color: Color,
         size: u8,
     ) {
-        if let Some(particle) = self.particles.iter_mut().find(|p| !p.active){
+        if let Some(particle) = self.particles.iter_mut().find(|p| !p.active) {
             particle.x = x;
             particle.y = y;
             particle.vx = vx;
@@ -126,7 +129,7 @@ impl ParticleSystem {
     ) {
         let mut spawned_particles = 0;
 
-        for particle in self.particles.iter_mut(){
+        for particle in self.particles.iter_mut() {
             if spawned_particles >= count {
                 break;
             }
@@ -150,7 +153,6 @@ impl ParticleSystem {
             particle.active = true;
 
             spawned_particles += 1;
-
         }
     }
 
@@ -161,6 +163,6 @@ impl ParticleSystem {
     }
 
     pub fn count(&self) -> usize {
-        self.particles.iter().filter(|p|p.active).count()
+        self.particles.iter().filter(|p| p.active).count()
     }
 }

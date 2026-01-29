@@ -1,5 +1,5 @@
 use alloc::format;
-use firefly_rust::{clear_screen, draw_image, Color, Point};
+use firefly_rust::{clear_screen, Color, Point};
 
 use crate::{constants::*, drawing::*, palette::*, point_math::*, state::*};
 
