@@ -23,9 +23,10 @@ impl Fireflies {
     }
 
     pub fn draw(&self, camera: &Camera) {
-        for firefly in self.fireflies.iter() {
-            firefly.draw(camera);
-        }
+        self.fireflies
+            .iter()
+            .filter(|firefly| camera.is_in_screen(firefly.position))
+            .for_each(|firefly| firefly.draw(camera))
     }
 
     fn collect_fireflies(&mut self, world: &World) -> Vec<Firefly> {

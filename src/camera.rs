@@ -10,7 +10,7 @@ pub struct Camera {
 impl Camera {
     pub fn new(world_width: i32, world_height: i32) -> Self {
         Self {
-            position: Point { x: 0, y: 0 },
+            position: Point::MIN,
             world_width,
             world_height,
         }
@@ -28,6 +28,13 @@ impl Camera {
             x: screen_pos.x + self.position.x,
             y: screen_pos.y + self.position.y,
         }
+    }
+
+    pub fn is_in_screen(&self, world_pos: Point) -> bool {
+        world_pos.x >= self.position.x
+            && world_pos.x < self.position.x + SCREEN_WIDTH
+            && world_pos.y >= self.position.y
+            && world_pos.y < self.position.y + SCREEN_HEIGHT
     }
 
     fn clamp_to_bounds(&mut self) {
