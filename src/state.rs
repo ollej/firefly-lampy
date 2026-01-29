@@ -155,7 +155,7 @@ impl State {
                 self.camera.follow_player(player.position, 0.2);
             }
         }
-        let removed_fireflies = self.fireflies.update(&self.world);
+        let removed_fireflies = self.fireflies.update(&self.world, &self.camera);
         self.collect_fireflies(removed_fireflies);
         self.check_win_condition();
         self.update_texts();

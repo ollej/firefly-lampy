@@ -42,9 +42,11 @@ impl Firefly {
         Angle::from_degrees(random_range(0, 360) as f32)
     }
 
-    pub fn update(&mut self, world: &World) {
+    pub fn update(&mut self, world: &World, on_screen: bool) {
         self.update_movement(world);
-        self.spawn_particles();
+        if on_screen {
+            self.spawn_particles();
+        }
     }
 
     pub fn draw(&self, camera: &Camera) {
