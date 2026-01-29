@@ -1,23 +1,6 @@
-use firefly_rust::{draw_sub_image, draw_text, Color, Point, Size, HEIGHT, WIDTH};
+use firefly_rust::{draw_text, Color, Point, HEIGHT, WIDTH};
 
 use crate::{constants::*, state::*};
-
-pub type Sprite = i32;
-
-pub fn draw_tile(sprite: Sprite, point: Point) {
-    let state = get_state();
-    let tile_sprite = state.spritesheet.as_image().sub(
-        Point {
-            x: ((sprite % 8) * TILE_WIDTH),
-            y: ((sprite / 8) * TILE_HEIGHT),
-        },
-        Size {
-            width: SPRITES_W,
-            height: SPRITES_H,
-        },
-    );
-    draw_sub_image(&tile_sprite, point);
-}
 
 pub fn display_large_text_color(text: &str, position: Point, color: Color) {
     let state = get_state();

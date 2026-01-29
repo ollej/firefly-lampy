@@ -1,17 +1,25 @@
 use alloc::vec::Vec;
 
-use firefly_rust::Point;
+use firefly_rust::{
+    clear_screen, draw_sub_image, set_canvas, unset_canvas, CanvasBuf, Color, Point, Size,
+};
 
 use crate::{
     camera::Camera,
-    constants::{SCREEN_HEIGHT, SCREEN_WIDTH, TILE_HEIGHT, TILE_WIDTH, WORLD_HEIGHT, WORLD_WIDTH},
-    drawing::draw_tile,
+    constants::{
+        SCREEN_HEIGHT, SCREEN_WIDTH, SPRITES_H, SPRITES_W, TILE_HEIGHT, TILE_WIDTH, WORLD_HEIGHT,
+        WORLD_WIDTH,
+    },
     rectangle::Rectangle,
+    state::get_state,
     tile::Tile,
     utility::random_range,
 };
 
+pub type Sprite = i32;
+
 pub struct World {
+    canvas: CanvasBuf,
     tiles: Vec<Tile>,
     width: i32,
     height: i32,
@@ -48,14 +56,59 @@ impl World {
             }
         }
 
+        let canvas = Self::draw_tiles_to_canvas(&tiles, width, height);
+
         Self {
+            canvas,
             tiles,
             width,
             height,
         }
     }
 
+    pub fn draw_tile(sprite: Sprite, point: Point) {
+        let state = get_state();
+        let tile_sprite = state.spritesheet.as_image().sub(
+            Point {
+                x: ((sprite % 8) * TILE_WIDTH),
+                y: ((sprite / 8) * TILE_HEIGHT),
+            },
+            Size {
+                width: SPRITES_W,
+                height: SPRITES_H,
+            },
+        );
+        draw_sub_image(&tile_sprite, point);
+    }
+
     pub fn draw(&self, camera: &Camera) {
+        let screen_start = camera.screen_to_world(Point::MIN);
+        let sub_image = self.canvas.as_image().sub(screen_start, Size::MAX);
+        draw_sub_image(&sub_image, Point::MIN)
+    }
+
+    pub fn draw_tiles_to_canvas(tiles: &Vec<Tile>, width: i32, height: i32) -> CanvasBuf {
+        let canvas_buf = CanvasBuf::new(Size::new(WORLD_WIDTH, WORLD_HEIGHT));
+        let canvas = &canvas_buf.as_canvas();
+        set_canvas(canvas);
+        clear_screen(Color::White);
+
+        for y in 0..width {
+            for x in 0..height {
+                if let Some(index) = Self::convert_pos_to_index(x, y, width, height) {
+                    if let Some(tile) = tiles.get(index) {
+                        Self::draw_tile(tile.sprite_index, tile.position);
+                    }
+                }
+            }
+        }
+
+        unset_canvas();
+
+        canvas_buf
+    }
+
+    pub fn draw_tiles_to_camera(&self, camera: &Camera) {
         let screen_start = camera.screen_to_world(Point { x: 0, y: 0 });
         let screen_end = camera.screen_to_world(Point {
             x: SCREEN_WIDTH,
@@ -72,7 +125,7 @@ impl World {
             for x in start_x..end_x {
                 if let Some(tile) = self.get_tile(x, y) {
                     let screen_pos = camera.world_to_screen(tile.position);
-                    draw_tile(tile.sprite_index, screen_pos);
+                    Self::draw_tile(tile.sprite_index, screen_pos);
                 }
             }
         }
@@ -81,7 +134,7 @@ impl World {
     pub fn draw_all_without_camera(&self) {
         // For testing / debug
         for tile in self.tiles.iter() {
-            draw_tile(tile.sprite_index, tile.position);
+            Self::draw_tile(tile.sprite_index, tile.position);
         }
     }
 
@@ -120,13 +173,13 @@ impl World {
     }
 
     fn get_tile(&self, x: i32, y: i32) -> Option<&Tile> {
-        let index = self.convert_pos_to_index(x, y)?;
+        let index = Self::convert_pos_to_index(x, y, self.width, self.height)?;
         self.tiles.get(index)
     }
 
-    fn convert_pos_to_index(&self, x: i32, y: i32) -> Option<usize> {
-        if x >= 0 && x < self.width && y >= 0 && y < self.height {
-            Some((y * self.width + x) as usize)
+    fn convert_pos_to_index(x: i32, y: i32, width: i32, height: i32) -> Option<usize> {
+        if x >= 0 && x < width && y >= 0 && y < height {
+            Some((y * width + x) as usize)
         } else {
             None
         }
