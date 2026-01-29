@@ -10,12 +10,6 @@ pub fn render_title() {
     display_centered_message(Some(Color::White), &["Lampy", "Press <E>"]);
 }
 
-pub fn render_died() {
-    let state = get_state();
-    state.draw();
-    display_centered_message(None, &["You died!", "Press <E>"]);
-}
-
 pub fn render_gameover(won: bool) {
     let state = get_state();
     state.draw();

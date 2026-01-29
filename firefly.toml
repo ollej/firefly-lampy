@@ -12,7 +12,6 @@ pling = { path = "assets/score.wav" }
 
 [badges]
 1 = { name = "wins", steps = 10, descr = "Win 10 times" }
-2 = { name = "deaths", steps = 10, descr = "Die 10 times" }
 
 [cheats]
 restart = 1

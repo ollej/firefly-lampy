@@ -3,6 +3,5 @@ pub enum GameState {
     Title,
     Credits,
     Info,
-    Died,
     GameOver(bool),
 }

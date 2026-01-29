@@ -18,14 +18,12 @@ pub struct State {
     fireflies: Fireflies,
     pub font_large: FileBuf,
     pub font_small: FileBuf,
-    fx: audio::Node<audio::Gain>,
     pub game_state: GameState,
     pub me: Option<Peer>,
     particles: ParticleSystem,
     pub players: Vec<Player>,
     pub spritesheet: FileBuf,
     texts: Vec<Text>,
-    theme: audio::Node<audio::Gain>,
     //pub title: FileBuf,
     world: World,
 }
@@ -39,14 +37,12 @@ impl Default for State {
             fireflies: Fireflies::new(),
             font_large: load_file_buf("font_large").unwrap(),
             font_small: load_file_buf("font_small").unwrap(),
-            fx: audio::OUT.add_gain(1.0),
             game_state: GameState::Title,
             me: None,
             particles: ParticleSystem::new(200),
             players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
             texts: vec![],
-            theme: audio::OUT.add_gain(0.5),
             //title: load_file_buf("_splash").unwrap(),
             world: World::new_from_2d_array(TILE_ARRAY),
         }
@@ -90,11 +86,6 @@ impl State {
             GameState::Info => {
                 if just_pressed.any() {
                     self.game_state = GameState::Title;
-                }
-            }
-            GameState::Died => {
-                if just_pressed.any() {
-                    self.game_state = GameState::Playing;
                 }
             }
             GameState::Playing => {

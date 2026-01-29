@@ -3,9 +3,7 @@ use crate::constants::{WORLD_HEIGHT, WORLD_WIDTH};
 use crate::utility::random_range;
 use alloc::vec;
 use alloc::vec::Vec;
-use firefly_rust::{Color, Point, draw_point};
-
-const GRAVITY: i16 = 0;
+use firefly_rust::{draw_point, Color, Point};
 
 const FIXED_POINT_SHIFT: i16 = 4;
 
@@ -47,14 +45,12 @@ impl Particle {
 #[derive(Clone)]
 pub struct ParticleSystem {
     particles: Vec<Particle>,
-    max_particles: usize,
 }
 
 impl ParticleSystem {
     pub fn new(max_particles: usize) -> Self {
         Self {
             particles: vec![Particle::default(); max_particles],
-            max_particles,
         }
     }
 

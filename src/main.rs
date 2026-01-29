@@ -30,7 +30,7 @@ use crate::utility::set_colors;
 use audio::*;
 use game_state::GameState;
 use rendering::*;
-use state::{STATE, State, get_state};
+use state::{get_state, State, STATE};
 
 #[unsafe(no_mangle)]
 extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
@@ -89,7 +89,6 @@ extern "C" fn render() {
         GameState::Credits => render_credits(),
         GameState::Info => render_info(),
         GameState::Playing => state.draw(),
-        GameState::Died => render_died(),
         GameState::GameOver(won) => render_gameover(won),
     }
 }
