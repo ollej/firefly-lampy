@@ -1,4 +1,4 @@
-use firefly_rust::{math, Angle, Point};
+use firefly_rust::{Angle, Point, math};
 
 use crate::utility::random_range;
 

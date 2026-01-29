@@ -1,4 +1,4 @@
-use firefly_rust::{draw_line, draw_point, log_debug, math, Angle, LineStyle, Point};
+use firefly_rust::{Angle, LineStyle, Point, draw_line, draw_point, log_debug, math};
 
 use alloc::format;
 

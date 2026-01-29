@@ -1,6 +1,6 @@
 use alloc::string::String;
 
-use firefly_rust::{draw_text, math, Color, Point};
+use firefly_rust::{Color, Point, draw_text, math};
 
 use crate::{camera::Camera, palette::Palette, state::get_state};
 

@@ -30,7 +30,7 @@ use crate::utility::set_colors;
 use audio::*;
 use game_state::GameState;
 use rendering::*;
-use state::{get_state, State, STATE};
+use state::{STATE, State, get_state};
 
 #[unsafe(no_mangle)]
 extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
