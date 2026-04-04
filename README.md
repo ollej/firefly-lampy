@@ -45,14 +45,18 @@ released). Instructions on how to [install the Firefly Zero
 emulator](https://docs.fireflyzero.com/user/installation/).
 
 ### OS X (Mac) or Linux
+
 Run the following:
+
 ```sh
 PLAY="$(curl https://fireflyzero.com/play.sh)"
 bash -c "$PLAY" -- olle.lampy
 ```
 
 ### Windows
-Istall firefly_cli and then run:
+
+Install firefly_cli and then run:
+
 ```
 firefly_cli import olle.lampy
 firefly_cli emulator --id olle.lampy
