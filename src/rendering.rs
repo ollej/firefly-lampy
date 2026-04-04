@@ -1,5 +1,5 @@
 use alloc::format;
-use firefly_rust::{clear_screen, Color, Point};
+use firefly_rust::{Color, Point, clear_screen};
 
 use crate::{constants::*, drawing::*, palette::*, point_math::*, state::*};
 
@@ -25,8 +25,9 @@ pub fn render_ui() {
     state
         .players
         .iter()
-        .find(|player| Some(player.peer) == state.me)
-        .map(|player| {
+        .find(|player| player.peer == state.me)
+        .iter()
+        .for_each(|player| {
             let text = format!("Points:{}", player.points);
             display_large_text_color(text.as_str(), Point::new(0, 14), Palette::Black.into());
             display_large_text_color(
