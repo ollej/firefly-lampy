@@ -19,7 +19,7 @@ pub struct State {
     pub font_large: FileBuf,
     pub font_small: FileBuf,
     pub game_state: GameState,
-    pub me: Option<Peer>,
+    pub me: Me,
     particles: ParticleSystem,
     pub players: Vec<Player>,
     pub spritesheet: FileBuf,
@@ -38,7 +38,7 @@ impl Default for State {
             font_large: load_file_buf("font_large").unwrap(),
             font_small: load_file_buf("font_small").unwrap(),
             game_state: GameState::Title,
-            me: None,
+            me: get_me(),
             particles: ParticleSystem::new(200),
             players: Vec::new(),
             spritesheet: load_file_buf("spritesheet").unwrap(),
@@ -57,11 +57,11 @@ pub fn get_state() -> &'static mut State {
 impl State {
     const WIN_POINTS: i32 = 20;
 
-    pub fn new(player: Peer, peers: Peers) -> Self {
+    pub fn new(me: Me, peers: Peers) -> Self {
         let world = World::new_from_2d_array(TILE_ARRAY);
         State {
             players: peers.iter().map(|peer| Player::new(peer, &world)).collect(),
-            me: Some(player),
+            me,
             world,
             ..State::default()
         }
@@ -126,7 +126,7 @@ impl State {
 
     pub fn add_points(&mut self, points: i32) -> i32 {
         for player in self.players.iter_mut() {
-            if self.me == Some(player.peer) {
+            if self.me == player.peer {
                 player.points += points;
                 return player.points;
             }
@@ -137,7 +137,7 @@ impl State {
     fn update_playing(&mut self) {
         for player in self.players.iter_mut() {
             player.update(&self.world);
-            if self.me == Some(player.peer) {
+            if self.me == player.peer {
                 self.camera.follow_player(player.position, 0.2);
             }
         }
@@ -166,7 +166,7 @@ impl State {
             .find(|player| player.points >= Self::WIN_POINTS)
         {
             add_progress(winner.peer, BADGE_WINS, 1);
-            self.game_state = GameState::GameOver(Some(winner.peer) == self.me);
+            self.game_state = GameState::GameOver(winner.peer == self.me);
         }
     }
 
