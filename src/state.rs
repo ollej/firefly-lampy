@@ -78,16 +78,6 @@ impl State {
                     self.game_state = GameState::Playing;
                 }
             }
-            GameState::Credits => {
-                if just_pressed.any() {
-                    self.game_state = GameState::Title;
-                }
-            }
-            GameState::Info => {
-                if just_pressed.any() {
-                    self.game_state = GameState::Title;
-                }
-            }
             GameState::Playing => {
                 self.update_playing();
             }
