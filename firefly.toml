@@ -4,7 +4,8 @@ author_name = "Olle & Catboots"
 app_name = "Lampy"
 
 [files]
-spritesheet = { path = "assets/spritesheet.png", palette="steam-lords" }
+_manual = { path = "manual" }
+spritesheet = { path = "assets/spritesheet.png", palette = "steam-lords" }
 font_large = { path = "assets/kenney_16x16.fff" }
 font_small = { path = "assets/pico8_4x6.fff" }
 music_loop = { path = "assets/loop.wav" }

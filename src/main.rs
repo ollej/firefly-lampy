@@ -30,7 +30,7 @@ use crate::utility::set_colors;
 use audio::*;
 use game_state::GameState;
 use rendering::*;
-use state::{get_state, State, STATE};
+use state::{STATE, State, get_state};
 
 #[unsafe(no_mangle)]
 extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
@@ -51,11 +51,8 @@ extern "C" fn cheat(cmd: i32, val: i32) -> i32 {
 #[unsafe(no_mangle)]
 extern "C" fn handle_menu(menu_item: u8) {
     let state = get_state();
-    match menu_item {
-        1 => state.game_state = GameState::Credits,
-        2 => state.restart(),
-        3 => state.game_state = GameState::Info,
-        _ => (),
+    if menu_item == 1 {
+        state.restart()
     }
 }
 
@@ -68,10 +65,7 @@ extern "C" fn boot() {
     #[allow(static_mut_refs)]
     unsafe { AUDIO.set(AudioPlayer::new()) }.ok().unwrap();
     set_colors();
-    ff::add_menu_item(1, "Credits");
-    ff::add_menu_item(2, "Restart");
-    ff::add_menu_item(3, "Info");
-
+    ff::add_menu_item(1, "Restart level");
     get_audio_player().play_music("music_loop");
 }
 
@@ -86,8 +80,6 @@ extern "C" fn render() {
     let state = get_state();
     match state.game_state {
         GameState::Title => render_title(),
-        GameState::Credits => render_credits(),
-        GameState::Info => render_info(),
         GameState::Playing => state.draw(),
         GameState::GameOver(won) => render_gameover(won),
     }

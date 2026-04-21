@@ -2,27 +2,6 @@ use core::f32;
 
 use firefly_rust::Badge;
 
-pub const CREDITS: [&str; 9] = [
-    "<Credits>",
-    "",
-    "Programming:",
-    " -Olle Wreede",
-    " -Catboots",
-    "Graphics:",
-    " -Catboots",
-    "Music + SFX:",
-    " -OpenGameArt",
-];
-
-pub const INFO: [&str; 6] = [
-    "Guide the fireflies to the score pad in the",
-    " middle of the map to score points.",
-    "Attract fireflies by shining a flashlight",
-    " of the same color at them.",
-    "Steer your circle with touchpad.",
-    "Use buttons to shine flash light.",
-];
-
 pub const TILE_WIDTH: i32 = 16;
 pub const TILE_HEIGHT: i32 = 16;
 pub const SPRITES_W: i32 = 16;

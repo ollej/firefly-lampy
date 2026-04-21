@@ -1,7 +1,7 @@
 use alloc::format;
 use firefly_rust::{
-    draw_circle, draw_triangle, log_debug, read_buttons, read_pad, Angle, Buttons, Peer, Point,
-    Style,
+    Angle, Buttons, Peer, Point, Style, draw_circle, draw_triangle, log_debug, read_buttons,
+    read_pad,
 };
 
 use crate::{
@@ -101,7 +101,7 @@ impl Player {
     fn move_horizontally(&mut self, target_position: Point, world: &World) {
         let amount = target_position.x - self.position.x;
         let step = movement_to_step(amount);
-        for _ in 0..amount.abs() as i32 {
+        for _ in 0..amount.abs() {
             let test_pos = self.position.addx(step);
             if !world.is_blocked(test_pos) {
                 self.position.x = test_pos.x;
@@ -112,7 +112,7 @@ impl Player {
     fn move_vertically(&mut self, target_position: Point, world: &World) {
         let amount = target_position.y - self.position.y;
         let step = movement_to_step(amount);
-        for _ in 0..amount.abs() as i32 {
+        for _ in 0..amount.abs() {
             let test_pos = self.position.addy(step);
             if !world.is_blocked(test_pos) {
                 self.position.y = test_pos.y;
