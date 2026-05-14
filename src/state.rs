@@ -131,8 +131,8 @@ impl State {
                 self.camera.follow_player(player.position, 0.2);
             }
         }
-        let removed_fireflies = self.fireflies.update(&self.world, &self.camera);
-        self.collect_fireflies(removed_fireflies);
+        let collected_fireflies = self.fireflies.update(&self.world, &self.camera);
+        self.handle_collected_fireflies(collected_fireflies);
         self.check_win_condition();
         self.update_texts();
         self.particles.update();
@@ -160,7 +160,7 @@ impl State {
         }
     }
 
-    fn collect_fireflies(&mut self, fireflies: Vec<Firefly>) {
+    fn handle_collected_fireflies(&mut self, fireflies: Vec<Firefly>) {
         fireflies
             .iter()
             .for_each(|firefly| self.handle_collected_firefly(firefly));
@@ -169,7 +169,7 @@ impl State {
     fn handle_collected_firefly(&mut self, firefly: &Firefly) {
         if let Some(attracted_to) = firefly.attracted_to {
             for player in self.players.iter_mut() {
-                if player.attraction_target == attracted_to {
+                if player.peer == attracted_to.peer {
                     player.points += firefly.points();
                     get_audio_player().play_sfx("pling");
                     self.spawn_collection_burst(firefly);

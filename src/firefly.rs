@@ -1,19 +1,20 @@
 use firefly_rust::{draw_line, draw_point, math, Angle, LineStyle, Point};
 
 use crate::{
-    camera::Camera, constants::WORLD_HEIGHT, constants::WORLD_WIDTH, firefly_color::FireflyColor,
-    palette::Palette, particles::ParticleSystem, player::Player, point_math::PointMath,
-    state::get_state, utility::random_range, world::World,
+    attraction_target::AttractionTarget, camera::Camera, constants::WORLD_HEIGHT,
+    constants::WORLD_WIDTH, firefly_color::FireflyColor, palette::Palette,
+    particles::ParticleSystem, player::Player, point_math::PointMath, state::get_state,
+    utility::random_range, world::World,
 };
 
 pub struct Firefly {
-    pub attracted_to: Option<Point>,
+    pub attracted_to: Option<AttractionTarget>,
     pub color: FireflyColor,
     direction: Angle,
     particles: ParticleSystem,
     pub position: Point,
     remainder: f32,
-    cached_pos: Option<Point>,
+    cached_target: Option<AttractionTarget>,
     cache_age: u8,
 }
 
@@ -31,7 +32,7 @@ impl Firefly {
             particles: ParticleSystem::new(20),
             position: world.random_unblocked_point_in_rectangle(color.starting_rect()),
             remainder: 0.0,
-            cached_pos: None,
+            cached_target: None,
             cache_age: 255,
         }
     }
@@ -76,7 +77,7 @@ impl Firefly {
 
     fn update_movement(&mut self, world: &World) {
         if self.cache_age > 5 {
-            self.cached_pos = self.find_closest_target();
+            self.cached_target = self.find_closest_target();
             self.cache_age = 0;
         } else {
             self.cache_age += 1;
@@ -84,7 +85,7 @@ impl Firefly {
         self.change_direction();
 
         // Skip movement if at attraction_target
-        if Some(self.position) == self.attracted_to {
+        if self.is_at_attraction_target() {
             //log_debug("at attraction_target");
             self.remainder = 0.0;
             return;
@@ -121,10 +122,10 @@ impl Firefly {
     }
 
     fn change_direction(&mut self) {
-        if let Some(attraction_target) = self.cached_pos {
+        if let Some(attraction_target) = self.cached_target {
             // Set direction towards closest attraction target within reach
             self.attracted_to = Some(attraction_target);
-            self.direction = self.position.angle_to(&attraction_target);
+            self.direction = self.position.angle_to(&attraction_target.point);
         } else if self.attracted_to.is_some() {
             //log_debug("lost attraction_target");
             self.attracted_to = None;
@@ -137,7 +138,7 @@ impl Firefly {
         }
     }
 
-    fn find_closest_target(&self) -> Option<Point> {
+    fn find_closest_target(&self) -> Option<AttractionTarget> {
         let state = get_state();
         state
             .players
@@ -145,7 +146,7 @@ impl Firefly {
             .filter(|player| self.matches_player(player))
             .map(|player| {
                 (
-                    player.attraction_target,
+                    AttractionTarget::new(player.peer, player.attraction_target),
                     self.distance_to(player.attraction_target),
                 )
             })
@@ -162,10 +163,18 @@ impl Firefly {
         math::floor(self.position.distance(&point)) as i32
     }
 
+    fn is_at_attraction_target(&self) -> bool {
+        if let Some(attracted_to) = self.attracted_to {
+            self.position == attracted_to.point
+        } else {
+            false
+        }
+    }
+
     fn draw_debug_line_to_attraction_point(&self, camera: &Camera) {
         if let Some(attraction_target) = self.attracted_to {
             let from = camera.world_to_screen(self.position);
-            let to = camera.world_to_screen(attraction_target);
+            let to = camera.world_to_screen(attraction_target.point);
             draw_line(
                 from,
                 to,
