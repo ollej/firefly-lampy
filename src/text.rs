@@ -36,16 +36,20 @@ impl Text {
 
     pub fn draw(&self, camera: &Camera) {
         let state = get_state();
-        let font = state.font_small.as_font();
         let position = camera.world_to_screen(self.position);
         let shadow_position = position + Point::new(1, 1);
         draw_text(
             self.content.as_str(),
-            &font,
+            &state.font_small,
             shadow_position,
             Palette::Black.into(),
         );
-        draw_text(self.content.as_str(), &font, position, self.color);
+        draw_text(
+            self.content.as_str(),
+            &state.font_small,
+            position,
+            self.color,
+        );
     }
 
     pub fn remove(&self) -> bool {
